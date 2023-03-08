@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using StreamChatMaui.Services;
 
 namespace StreamChatMaui;
 
@@ -18,6 +19,12 @@ public static class MauiProgram
 #if DEBUG
 		builder.Logging.AddDebug();
 #endif
+		
+		// Services
+		builder.Services.AddSingleton<IStreamChatService, StreamChatService>();
+
+		// Pages
+		builder.Services.AddSingleton<MainPage>();
 
 		return builder.Build();
 	}

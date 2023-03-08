@@ -1,10 +1,12 @@
-﻿namespace StreamChatMaui;
+﻿using StreamChatMaui.Services;
+
+namespace StreamChatMaui;
 
 public partial class MainPage : ContentPage
 {
 	int count = 0;
 
-	public MainPage()
+	public MainPage(IStreamChatService chatService)
 	{
 		InitializeComponent();
 	}
