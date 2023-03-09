@@ -1,25 +1,23 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:StreamChatMaui.ViewModels"
-             x:Class="StreamChatMaui.MainPage">
-
+             x:Class="StreamChatMaui.ChannelDetailsPage">
     <ListView 
-        x:Name="ChannelsList"
+        x:Name="MessagesList"
         Background="Transparent"
-        SeparatorColor="Grey"
-        ItemSelected="ChannelsList_ItemSelected">
+        SeparatorColor="Grey">
 
         <ListView.ItemTemplate>
-            <DataTemplate x:DataType="viewmodels:ChannelItemVM">
+            <DataTemplate x:DataType="viewmodels:MessageVM">
                 <TextCell 
-                    Text="{Binding Path=Title}" 
-                    Detail="{Binding Path=Detail}">
+                    Text="{Binding Path=Text}" 
+                    Detail="{Binding Path=Author}">
                     
                 </TextCell>
             </DataTemplate>
         </ListView.ItemTemplate>
         
     </ListView>
-
 </ContentPage>

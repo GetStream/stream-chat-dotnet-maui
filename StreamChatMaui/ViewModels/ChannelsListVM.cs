@@ -8,19 +8,19 @@ namespace StreamChatMaui.ViewModels
     /// <summary>
     /// View model for a list of channels
     /// </summary>
-    public class ChannelsListVM
+    public class ChannelsListVM : BaseViewModel
     {
-        public ReadOnlyObservableCollection<ChannelVM> Channels { get; }
+        public ReadOnlyObservableCollection<ChannelItemVM> Channels { get; }
 
         public ChannelsListVM(IStreamChatService chatService, ILogger<ChannelsListVM> logger)
         {
             _chatService = chatService;
-            Channels = new ReadOnlyObservableCollection<ChannelVM>(_channels);
+            Channels = new ReadOnlyObservableCollection<ChannelItemVM>(_channels);
 
             LoadChannelsAsync().LogIfFailed(logger);
         }
 
-        private readonly ObservableCollection<ChannelVM> _channels = new();
+        private readonly ObservableCollection<ChannelItemVM> _channels = new();
 
         private readonly IStreamChatService _chatService;
 
@@ -33,7 +33,7 @@ namespace StreamChatMaui.ViewModels
             //Todo: move to factory service
             foreach(var c in channels)
             {
-                var channelVm = new ChannelVM(c);
+                var channelVm = new ChannelItemVM(c);
                 _channels.Add(channelVm);
             }
         }

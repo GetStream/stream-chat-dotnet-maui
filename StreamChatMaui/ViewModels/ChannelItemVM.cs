@@ -6,21 +6,27 @@ namespace StreamChatMaui.ViewModels;
 /// <summary>
 /// ViewModel for a single <see cref="IStreamChannel"/>
 /// </summary>
-public class ChannelVM
+public class ChannelItemVM : BaseViewModel
 {
     //Todo: move to config
     public const int TitleMaxCharCount = 30;
     public const int DetailMaxCharCount = 30;
 
+    public string Id => _channel.Id;
+    public string Type => _channel.Type;
+    
+    //Todo: change to observable properties
     public string Title { get; private set; }
-    public string Detail { get; private set; }
+    public string Detail{ get; private set; }
 
-    public ChannelVM(IStreamChannel channel)
+    public ChannelItemVM(IStreamChannel channel)
     {
-        _channel = channel;
+        _channel = channel ?? throw new ArgumentNullException(nameof(channel));
 
         Title = GenerateTitle();
         Detail = GenerateDetail();
+
+        //Todo: subscribe to message received so we update the Details snippet
     }
 
     private readonly IStreamChannel _channel;

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommunityToolkit.Maui;
+using Microsoft.Extensions.Logging;
 using StreamChatMaui.Services;
 using StreamChatMaui.ViewModels;
 
@@ -15,7 +16,7 @@ public static class MauiProgram
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-			});
+			}).UseMauiCommunityToolkit();
 
 #if DEBUG
 		builder.Logging.AddDebug();
@@ -23,12 +24,15 @@ public static class MauiProgram
 		
 		// Services
 		builder.Services.AddSingleton<IStreamChatService, StreamChatService>();
+		builder.Services.AddSingleton<RouteUrlFactory>();
 		
 		// View models
 		builder.Services.AddSingleton<ChannelsListVM>();
+		builder.Services.AddSingleton<ChannelDetailsVM>();
 
 		// Pages
 		builder.Services.AddSingleton<MainPage>();
+		builder.Services.AddSingleton<ChannelDetailsPage>();
 
 		return builder.Build();
 	}
