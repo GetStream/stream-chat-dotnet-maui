@@ -12,3 +12,8 @@ Example of using Stream Chat in a .NET MAUI app
 - Windows
 - Android Emulator
 - Android Device
+
+### Conventions
+Each class members are sorted:
+- by accessability modifier: public -> protected -> private
+- then by member type: properties -> fields -> methods
