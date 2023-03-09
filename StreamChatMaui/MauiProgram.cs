@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using StreamChatMaui.Services;
+using StreamChatMaui.ViewModels;
 
 namespace StreamChatMaui;
 
@@ -22,6 +23,9 @@ public static class MauiProgram
 		
 		// Services
 		builder.Services.AddSingleton<IStreamChatService, StreamChatService>();
+		
+		// View models
+		builder.Services.AddSingleton<ChannelsListVM>();
 
 		// Pages
 		builder.Services.AddSingleton<MainPage>();

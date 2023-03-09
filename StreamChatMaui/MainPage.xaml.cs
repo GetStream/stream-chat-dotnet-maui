@@ -1,26 +1,16 @@
-﻿using StreamChatMaui.Services;
+﻿using StreamChatMaui.ViewModels;
 
 namespace StreamChatMaui;
 
 public partial class MainPage : ContentPage
 {
-	int count = 0;
+    public MainPage(ChannelsListVM vm)
+    {
+        _vm = vm;
+        InitializeComponent();
 
-	public MainPage(IStreamChatService chatService)
-	{
-		InitializeComponent();
-	}
+        ChannelsList.ItemsSource = _vm.Channels;
+    }
 
-	private void OnCounterClicked(object sender, EventArgs e)
-	{
-		count++;
-
-		if (count == 1)
-			CounterBtn.Text = $"Clicked {count} time";
-		else
-			CounterBtn.Text = $"Clicked {count} times";
-
-		SemanticScreenReader.Announce(CounterBtn.Text);
-	}
+    private readonly ChannelsListVM _vm;
 }
-
