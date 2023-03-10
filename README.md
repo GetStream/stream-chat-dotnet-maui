@@ -11,7 +11,7 @@ Example of using Stream Chat in a .NET MAUI application.
 1. Create Stream account and start trial
 2. Go to [Stream's Dashboard](https://dashboard.getstream.io/) and:
     1. Create new app
-    2. [Enable Developer Tokens](https://getstream.io/chat/docs/unity/tokens_and_authentication/?language=unity#developer-tokens)
+    2. [Enable Developer Tokens](https://getstream.io/chat/docs/unity/tokens_and_authentication/?language=unity#developer-tokens) (Authorization will not work in this example otherwise!)
     3. Take the `Api Key` of your App and save in [StreamApiKey field of the Static config](https://github.com/sierpinskid/stream-chat-dotnet-maui/blob/main/StreamChatMaui/StaticConfig.cs) (please note that `api key` is different from `api secret`)
 3. Run the application
 
