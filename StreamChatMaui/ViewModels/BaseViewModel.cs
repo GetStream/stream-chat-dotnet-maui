@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace StreamChatMaui.ViewModels;
 
-public class BaseViewModel : INotifyPropertyChanged
+public partial class BaseViewModel : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler PropertyChanged;
 

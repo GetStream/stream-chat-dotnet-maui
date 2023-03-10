@@ -4,7 +4,7 @@ namespace StreamChatMaui;
 
 public partial class MainPage : ContentPage
 {
-    public MainPage(ChannelsListVM vm, RouteUrlFactory routeUrlFactory)
+    public MainPage(MainPageVM vm, RouteUrlFactory routeUrlFactory)
     {
         _vm = vm;
         _routeUrlFactory = routeUrlFactory;
@@ -14,17 +14,18 @@ public partial class MainPage : ContentPage
         ChannelsList.ItemsSource = _vm.Channels;
     }
 
-    private readonly ChannelsListVM _vm;
+    private readonly MainPageVM _vm;
     private readonly RouteUrlFactory _routeUrlFactory;
 
-    private async void ChannelsList_ItemSelected(object sender, SelectedItemChangedEventArgs e)
+    //Todo: refactor to command
+    private async void ChannelsList_ItemTapped(object sender, ItemTappedEventArgs e)
     {
-        if(e.SelectedItem == null)
+        if (e.Item == null)
         {
             return;
         }
 
-        var selectedChannel = (ChannelItemVM)e.SelectedItem;
+        var selectedChannel = (ChannelItemVM)e.Item;
 
         await Shell.Current.GoToAsync(_routeUrlFactory.CreateChannelDetailsPageRoute(selectedChannel));
     }

@@ -2,24 +2,27 @@
 
 namespace StreamChatMaui.ViewModels;
 
+/// <summary>
+/// View model for a <see cref="IStreamMessage"/>
+/// </summary>
 public class MessageVM : BaseViewModel
 {
     //Todo: change to observable
     public string Text { get; private set; }
     public string Author { get; private set; }
 
+    public IStreamMessage Message { get; }
+
     public MessageVM(IStreamMessage message)
     {
-        _message = message ?? throw new ArgumentNullException(nameof(message));
+        Message = message ?? throw new ArgumentNullException(nameof(message));
 
-        Update();
+        Refresh();
     }
 
-    public void Update()
+    public void Refresh()
     {
-        Text = _message.Text;
-        Author = _message.User.Id;
+        Text = Message.Text;
+        Author = Message.User.Id;
     }
-
-    private readonly IStreamMessage _message;
 }

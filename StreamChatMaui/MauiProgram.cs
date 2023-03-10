@@ -27,8 +27,8 @@ public static class MauiProgram
 		builder.Services.AddSingleton<RouteUrlFactory>();
 		
 		// View models
-		builder.Services.AddSingleton<ChannelsListVM>();
-		builder.Services.AddSingleton<ChannelDetailsVM>();
+		builder.Services.AddSingleton<MainPageVM>();
+		builder.Services.AddSingleton<ChannelVM>();
 
 		// Pages
 		builder.Services.AddSingleton<MainPage>();

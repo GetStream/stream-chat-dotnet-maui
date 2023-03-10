@@ -6,13 +6,13 @@ using StreamChatMaui.Utils;
 namespace StreamChatMaui.ViewModels
 {
     /// <summary>
-    /// View model for a list of channels
+    /// View model for the Main page with the list of channels
     /// </summary>
-    public class ChannelsListVM : BaseViewModel
+    public class MainPageVM : BaseViewModel
     {
         public ReadOnlyObservableCollection<ChannelItemVM> Channels { get; }
 
-        public ChannelsListVM(IStreamChatService chatService, ILogger<ChannelsListVM> logger)
+        public MainPageVM(IStreamChatService chatService, ILogger<MainPageVM> logger)
         {
             _chatService = chatService;
             Channels = new ReadOnlyObservableCollection<ChannelItemVM>(_channels);

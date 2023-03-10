@@ -8,7 +8,7 @@
         x:Name="ChannelsList"
         Background="Transparent"
         SeparatorColor="Grey"
-        ItemSelected="ChannelsList_ItemSelected">
+        ItemTapped="ChannelsList_ItemTapped">
 
         <ListView.ItemTemplate>
             <DataTemplate x:DataType="viewmodels:ChannelItemVM">
