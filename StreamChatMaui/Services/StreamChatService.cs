@@ -12,15 +12,15 @@ namespace StreamChatMaui.Services
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-            //Todo: get userId & token from an endpoint
-            var userName = "Jeffrey";
+            //Todo: get userId & token from an authorization endpoint
+            var userName = StreamChatUtils.GenerateRandomName();
             var userId = StreamChatClient.SanitizeUserId(userName);
 
             // Developer tokens need to be enabled (check docs below). This is fine for testing but in production user tokens should be provided by a customer endpoint
             // https://getstream.io/chat/docs/unity/tokens_and_authentication/?language=unity#developer-tokens
             var userToken = StreamChatClient.CreateDeveloperAuthToken(userId);
 
-            var credentials = new AuthCredentials(API_KEY, userId, userToken);
+            var credentials = new AuthCredentials(StaticConfig.StreamApiKey, userId, userToken);
 
             _client = StreamChatClient.CreateDefaultClient();
             _client.Connected += OnConnected;
@@ -53,9 +53,6 @@ namespace StreamChatMaui.Services
         }
         
         public void Dispose() => DisposeAsync().LogIfFailed(_logger);
-
-        //Todo: move to config
-        private const string API_KEY = "wtnrddkt5tt2";
 
         private readonly IStreamChatClient _client;
 

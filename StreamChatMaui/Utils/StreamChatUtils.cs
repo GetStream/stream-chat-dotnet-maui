@@ -61,5 +61,25 @@ namespace StreamChatMaui.Utils
 
             return sb.ToString();
         }
+
+        public static string GenerateRandomName()
+        {
+            var names = new[]
+            {
+                "Jeffrey",
+                "Tom",
+                "John",
+                "Bob",
+                "Suzie",
+                "Monica",
+                "Veronica",
+                "Mia"
+            };
+            
+            var rnd = new Random();
+            var randomIndex = rnd.Next(names.Length);
+            
+            return names[randomIndex];
+        }
     }
 }
