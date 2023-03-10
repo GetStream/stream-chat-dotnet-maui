@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using Microsoft.Extensions.Logging;
 using StreamChat.Core;
+using StreamChat.Core.StatefulModels;
 using StreamChatMaui.Services;
 using StreamChatMaui.Utils;
 
@@ -33,22 +34,36 @@ namespace StreamChatMaui.ViewModels
 
             if (!channels.Any())
             {
-                await CreateSampleChannelsAsync(client);
+                channels = await CreateSampleChannelsAsync(client);
             }
 
             //Todo: move to factory service
-            foreach(var c in channels)
+            foreach (var c in channels)
             {
                 var channelVm = new ChannelItemVM(c);
                 _channels.Add(channelVm);
             }
         }
 
-        private async Task CreateSampleChannelsAsync(IStreamChatClient client)
+        /// <summary>
+        /// Here we create sample channels of type <see cref="ChannelType.Livestream"/>. 
+        /// This channel type allows regular users (with role=user) to create new channels.
+        /// 
+        /// If you're building a regular chat app you should use the <see cref="ChannelType.Messaging"/> 
+        /// where regular users are not allowed to create new chanels (unless explicitly allowed through our permissions & roles system)
+        /// 
+        /// You can read more about channel types here https://getstream.io/chat/docs/unity/channel_features/?language=unity
+        /// </summary>
+        private async Task<IEnumerable<IStreamChannel>> CreateSampleChannelsAsync(IStreamChatClient client)
         {
-            await client.GetOrCreateChannelWithIdAsync(ChannelType.Messaging, "Main");
-            await client.GetOrCreateChannelWithIdAsync(ChannelType.Messaging, "The Amazing Channel");
-            await client.GetOrCreateChannelWithIdAsync(ChannelType.Messaging, "Private Group");
+            var c1 = await client.GetOrCreateChannelWithIdAsync(ChannelType.Livestream, "main", "Main");
+            var c2 = await client.GetOrCreateChannelWithIdAsync(ChannelType.Livestream, "baseball", "Baseball Club");
+            var c3 = await client.GetOrCreateChannelWithIdAsync(ChannelType.Livestream, "american_football",
+                "American Football");
+            var c4 = await client.GetOrCreateChannelWithIdAsync(ChannelType.Livestream, "basketball", "Basketball");
+            var c5 = await client.GetOrCreateChannelWithIdAsync(ChannelType.Livestream, "ice_hockey", "Ice Hockey");
+
+            return new[] { c1, c2, c3, c4, c5 };
         }
     }
 }
