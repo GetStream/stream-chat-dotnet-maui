@@ -20,7 +20,8 @@ The key component that initiates a connection with the Stream Chat Server is the
 1. Initiate the connection with `streamClient.ConnectUserAsync(credentials);`
 2. Update the client continously with `streamClient.Update();` (This updates the WebSocket communication)
 3. Call `streamClient.Dispose()` when finished using to free up resources
-All of the above are already covered by the provided [Stream Chat Service](https://github.com/sierpinskid/stream-chat-dotnet-maui/blob/main/StreamChatMaui/Services/StreamChatService.cs)..
+
+All of the above is handled by the [Stream Chat Service](https://github.com/sierpinskid/stream-chat-dotnet-maui/blob/main/StreamChatMaui/Services/StreamChatService.cs).
 
 ### Tested on:
 - Windows
