@@ -1,4 +1,4 @@
-# .NET MAUI app using Stream Chat
+# Example of a .NET MAUI App using Stream Chat
 Example of using Stream Chat in a .NET MAUI application.
 
 ### This demo project currently presents how to:
