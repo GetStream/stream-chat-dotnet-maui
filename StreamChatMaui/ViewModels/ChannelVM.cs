@@ -66,11 +66,6 @@ public partial class ChannelVM : BaseViewModel, IDisposable
         SendMessageCommand = new AsyncRelayCommand(ExecuteSendMessageCommand, CanSendMessageCommand);
     }
 
-    private void Entry_Focused(object sender, FocusEventArgs e)
-    {
-
-    }
-
     public void Dispose() => UnsubscribeFromEvents();
 
     private readonly ObservableCollection<MessageVM> _messages = new();
