@@ -1,4 +1,6 @@
-﻿namespace StreamChatMaui;
+﻿using StreamChatMaui.Views;
+
+namespace StreamChatMaui;
 
 public partial class AppShell : Shell
 {

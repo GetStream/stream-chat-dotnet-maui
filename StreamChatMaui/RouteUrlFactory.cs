@@ -1,4 +1,5 @@
 ﻿using StreamChatMaui.ViewModels;
+using StreamChatMaui.Views;
 
 namespace StreamChatMaui;
 

@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:StreamChatMaui.ViewModels"
-             x:Class="StreamChatMaui.MainPage">
+             x:Class="StreamChatMaui.Views.MainPage">
 
     <ListView 
         x:Name="ChannelsList"

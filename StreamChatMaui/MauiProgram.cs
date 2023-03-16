@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using StreamChatMaui.Services;
 using StreamChatMaui.ViewModels;
+using StreamChatMaui.Views;
 
 namespace StreamChatMaui;
 

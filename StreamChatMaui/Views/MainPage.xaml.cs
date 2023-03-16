@@ -1,6 +1,6 @@
 ﻿using StreamChatMaui.ViewModels;
 
-namespace StreamChatMaui;
+namespace StreamChatMaui.Views;
 
 public partial class MainPage : ContentPage
 {
