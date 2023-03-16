@@ -1,5 +1,5 @@
 ﻿using System;
-using StreamChat.Libs.Logs;
+using StreamChat.Libs.Loggers;
 
 namespace StreamChat.Core
 {

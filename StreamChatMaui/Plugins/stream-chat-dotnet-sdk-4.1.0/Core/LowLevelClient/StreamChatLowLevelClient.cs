@@ -19,7 +19,7 @@ using StreamChat.Libs;
 using StreamChat.Libs.AppInfo;
 using StreamChat.Libs.Auth;
 using StreamChat.Libs.Http;
-using StreamChat.Libs.Logs;
+using StreamChat.Libs.Loggers;
 using StreamChat.Libs.Serialization;
 using StreamChat.Libs.Time;
 using StreamChat.Libs.Utils;

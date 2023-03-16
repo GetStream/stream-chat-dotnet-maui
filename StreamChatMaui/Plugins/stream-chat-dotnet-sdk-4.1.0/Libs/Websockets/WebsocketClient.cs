@@ -7,7 +7,7 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using StreamChat.Libs.Logs;
+using StreamChat.Libs.Loggers;
 
 namespace StreamChat.Libs.Websockets
 {

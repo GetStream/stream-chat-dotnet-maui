@@ -47,10 +47,11 @@ namespace StreamChatMaui.ViewModels
 
         /// <summary>
         /// Here we create sample channels of type <see cref="ChannelType.Livestream"/>. 
-        /// This channel type allows regular users (with role=user) to create new channels.
+        /// The `Livestream` channel type allows regular users (with role=user) to create new channels.
         /// 
         /// If you're building a regular chat app you should use the <see cref="ChannelType.Messaging"/> 
-        /// where regular users are not allowed to create new chanels (unless explicitly allowed through our permissions & roles system)
+        /// where regular users are not allowed to create new chanels (unless explicitly allowed through our permissions & roles system).
+        /// We're using the less restrictive `Livestream` type here because users created with Developer Tokens have user role assigned by default
         /// 
         /// You can read more about channel types here https://getstream.io/chat/docs/unity/channel_features/?language=unity
         /// </summary>

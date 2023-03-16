@@ -1,7 +1,7 @@
 ﻿using System;
 using StreamChat.Core.State.Caches;
 using StreamChat.Core.StatefulModels;
-using StreamChat.Libs.Logs;
+using StreamChat.Libs.Loggers;
 using StreamChat.Libs.Serialization;
 
 namespace StreamChat.Core.State
