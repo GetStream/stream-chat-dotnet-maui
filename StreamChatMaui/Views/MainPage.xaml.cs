@@ -1,32 +1,35 @@
-﻿using StreamChatMaui.ViewModels;
+﻿using Microsoft.Extensions.Logging;
+using StreamChatMaui.ViewModels;
 
 namespace StreamChatMaui.Views;
 
 public partial class MainPage : ContentPage
 {
-    public MainPage(MainPageVM vm, RouteUrlFactory routeUrlFactory)
+    public MainPage(MainPageVM vm, ILogger<MainPage> logger)
     {
-        _vm = vm;
-        _routeUrlFactory = routeUrlFactory;
-        InitializeComponent();
+        BindingContext =_vm = vm;
+        _logger = logger;
 
-        //Todo: handle via Binding
-        ChannelsList.ItemsSource = _vm.Channels;
+        InitializeComponent();
     }
 
     private readonly MainPageVM _vm;
-    private readonly RouteUrlFactory _routeUrlFactory;
+    private readonly ILogger _logger;
 
-    //Todo: refactor to command
-    private async void ChannelsList_ItemTapped(object sender, ItemTappedEventArgs e)
+    private async void ChannelsList_ItemTapped(object sender, ItemTappedEventArgs args)
     {
-        if (e.Item == null)
+        if (args.Item == null)
         {
             return;
         }
 
-        var selectedChannel = (ChannelItemVM)e.Item;
-
-        await Shell.Current.GoToAsync(_routeUrlFactory.CreateChannelDetailsPageRoute(selectedChannel));
+        try
+        {
+            await _vm.OpenChannelCommand.ExecuteAsync(args.Item);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message);
+        }
     }
 }
