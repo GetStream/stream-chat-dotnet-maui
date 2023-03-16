@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using StreamChat.Core;
 using StreamChat.Core.StatefulModels;
@@ -14,10 +15,15 @@ namespace StreamChatMaui.ViewModels
     {
         public ReadOnlyObservableCollection<ChannelItemVM> Channels { get; }
 
-        public MainPageVM(IStreamChatService chatService, ILogger<MainPageVM> logger)
+        public IAsyncRelayCommand<ChannelItemVM> OpenChannelCommand { get; private set; }
+
+        public MainPageVM(IStreamChatService chatService, RouteUrlFactory routeUrlFactory, ILogger<MainPageVM> logger)
         {
             _chatService = chatService;
+            _routeUrlFactory = routeUrlFactory;
             Channels = new ReadOnlyObservableCollection<ChannelItemVM>(_channels);
+
+            OpenChannelCommand = new AsyncRelayCommand<ChannelItemVM>(ExecuteOpenChannelCommand);
 
             LoadChannelsAsync().LogIfFailed(logger);
         }
@@ -25,6 +31,10 @@ namespace StreamChatMaui.ViewModels
         private readonly ObservableCollection<ChannelItemVM> _channels = new();
 
         private readonly IStreamChatService _chatService;
+        private readonly RouteUrlFactory _routeUrlFactory;
+
+        private Task ExecuteOpenChannelCommand(ChannelItemVM selectedChannel)
+            => Shell.Current.GoToAsync(_routeUrlFactory.CreateChannelDetailsPageRoute(selectedChannel));
 
         private async Task LoadChannelsAsync()
         {

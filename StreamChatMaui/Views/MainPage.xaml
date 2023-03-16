@@ -2,12 +2,14 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:StreamChatMaui.ViewModels"
-             x:Class="StreamChatMaui.Views.MainPage">
+             x:Class="StreamChatMaui.Views.MainPage"
+             x:DataType="viewmodels:MainPageVM">
 
     <ListView 
         x:Name="ChannelsList"
         Background="Transparent"
         SeparatorColor="Grey"
+        ItemsSource="{Binding Channels}"
         ItemTapped="ChannelsList_ItemTapped">
 
         <ListView.ItemTemplate>
