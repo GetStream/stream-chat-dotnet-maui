@@ -29,11 +29,11 @@ public static class MauiProgram
 		
 		// View models
 		builder.Services.AddSingleton<MainPageVM>();
-		builder.Services.AddSingleton<ChannelVM>();
+		builder.Services.AddTransient<ChannelVM>();
 
 		// Pages
 		builder.Services.AddSingleton<MainPage>();
-		builder.Services.AddSingleton<ChannelDetailsPage>();
+		builder.Services.AddTransient<ChannelDetailsPage>();
 
 		return builder.Build();
 	}
