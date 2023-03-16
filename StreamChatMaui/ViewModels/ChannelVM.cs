@@ -52,6 +52,12 @@ public partial class ChannelVM : BaseViewModel, IDisposable
         set => SetProperty(ref _title, value);
     }
 
+    public bool IsEntryEnabled
+    {
+        get => _isEntryEnabled;
+        set => SetProperty(ref _isEntryEnabled, value);
+    }
+
     public IAsyncRelayCommand SendMessageCommand { get; private set; }
 
     public ReadOnlyObservableCollection<MessageVM> Messages { get; }
@@ -79,7 +85,7 @@ public partial class ChannelVM : BaseViewModel, IDisposable
 
     private string _title = string.Empty;
     private string _messageInput = string.Empty;
-    private bool _isInputFocused;
+    private bool _isEntryEnabled = true;
     private bool _isSending;
 
     private async Task ExecuteSendMessageCommand()
@@ -95,6 +101,10 @@ public partial class ChannelVM : BaseViewModel, IDisposable
         {
             await _channel.SendNewMessageAsync(MessageInput);
             MessageInput = string.Empty;
+
+            // Workaround to hide keyboard on mobile
+            IsEntryEnabled = false;
+            IsEntryEnabled = true;
         }
         finally
         {
