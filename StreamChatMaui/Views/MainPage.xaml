@@ -2,26 +2,35 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:StreamChatMaui.ViewModels"
+             xmlns:views="clr-namespace:StreamChatMaui.Views"
              x:Class="StreamChatMaui.Views.MainPage"
              x:DataType="viewmodels:MainPageVM">
 
-    <ListView 
+    <CollectionView 
         x:Name="ChannelsList"
         Background="Transparent"
-        SeparatorColor="Grey"
         ItemsSource="{Binding Channels}"
-        ItemTapped="ChannelsList_ItemTapped">
+        SelectionMode="Single">
 
-        <ListView.ItemTemplate>
+        <CollectionView.ItemTemplate>
             <DataTemplate x:DataType="viewmodels:ChannelItemVM">
-                <TextCell 
-                    Text="{Binding Path=Title}" 
-                    Detail="{Binding Path=Detail}">
-                    
-                </TextCell>
+                <Frame>
+                    <VerticalStackLayout>
+                        <Label Text="{Binding Title}" TextColor="{StaticResource Black}" FontAttributes="Bold"/>
+                        <Label Text="{Binding Detail}" TextColor="{StaticResource Gray400}"/>
+                    </VerticalStackLayout>
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer 
+                            NumberOfTapsRequired="1" 
+                            CommandParameter="{Binding .}" 
+                            Command="{Binding Path=OpenChannelCommand, Source={RelativeSource AncestorType={x:Type viewmodels:MainPageVM} }}"/>
+                    </Frame.GestureRecognizers>
+                </Frame>
+
             </DataTemplate>
-        </ListView.ItemTemplate>
-        
-    </ListView>
+        </CollectionView.ItemTemplate>
+
+
+    </CollectionView>
 
 </ContentPage>

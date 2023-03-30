@@ -33,7 +33,6 @@
 
                 </DataTemplate>
             </CollectionView.ItemTemplate>
-
         </CollectionView>
         <Grid Grid.Row="1" Padding="10" ColumnSpacing="5">
 
