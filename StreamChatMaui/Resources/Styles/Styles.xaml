@@ -7,7 +7,7 @@
     <!-- Custom defined styles -->
 
     <!-- Main Page (Channels List) -->
-    
+
     <Style TargetType="Frame" x:Key="ChannelItem_Box">
         <Setter Property="HasShadow" Value="False" />
         <Setter Property="Padding" Value="0"/>
@@ -21,8 +21,30 @@
     <Style TargetType="Label" x:Key="ChannelItem_Description">
         <Setter Property="TextColor" Value="{StaticResource Gray400}"/>
     </Style>
-    
+
     <!-- Channel Page (Messages List) -->
+
+    <Style TargetType="VerticalStackLayout" x:Key="ChannelPage_Message">
+        <Setter Property="Padding" Value="5"/>
+    </Style>
+
+    <Style TargetType="Frame" x:Key="ChannelPage_MessageFrame">
+        <Setter Property="HasShadow" Value="True"/>
+        <Setter Property="BorderColor" Value="LightGray"/>
+        <Setter Property="Padding" Value="10"/>
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="CornerRadius" Value="10"/>
+    </Style>
+
+    <Style TargetType="Label" x:Key="ChannelPage_MessageText">
+        <Setter Property="TextColor" Value="Black"/>
+    </Style>
+
+    <Style TargetType="HorizontalStackLayout" x:Key="ChannelPage_Author">
+        <Setter Property="VerticalOptions" Value="Center"/>
+        <Setter Property="Padding" Value="5"/>
+        <Setter Property="Spacing" Value="10"/>
+    </Style>
 
     <!-- Default Styles -->
 

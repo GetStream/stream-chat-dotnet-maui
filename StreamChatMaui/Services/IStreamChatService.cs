@@ -10,6 +10,6 @@ namespace StreamChatMaui.Services
         /// <summary>
         /// Get <see cref="IStreamChatClient"/> instance once connected
         /// </summary>
-        Task<IStreamChatClient> GetClientWhenReady();
+        Task<IStreamChatClient> GetClientWhenReadyAsync();
     }
 }

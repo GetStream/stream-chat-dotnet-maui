@@ -62,9 +62,10 @@ public partial class ChannelVM : BaseViewModel, IDisposable
 
     public ReadOnlyObservableCollection<MessageVM> Messages { get; }
 
-    public ChannelVM(IStreamChatService chatService, ILogger<ChannelVM> logger)
+    public ChannelVM(IStreamChatService chatService, IViewModelFactory viewModelFactory, ILogger<ChannelVM> logger)
     {
         _chatService = chatService;
+        _viewModelFactory = viewModelFactory;
         _logger = logger;
 
         Messages = new ReadOnlyObservableCollection<MessageVM>(_messages);
@@ -76,6 +77,7 @@ public partial class ChannelVM : BaseViewModel, IDisposable
 
     private readonly ObservableCollection<MessageVM> _messages = new();
     private readonly IStreamChatService _chatService;
+    private readonly IViewModelFactory _viewModelFactory;
     private readonly ILogger<ChannelVM> _logger;
 
     private string _inputChannelId;
@@ -119,15 +121,29 @@ public partial class ChannelVM : BaseViewModel, IDisposable
             return;
         }
 
-        _logger.LogInformation($"Load channel with id: {_inputChannelId}, type: {_inputChannelType}");
+        try
+        {
+            IsBusy = true;
 
-        var client = await _chatService.GetClientWhenReady();
-        var channel = await client.GetOrCreateChannelWithIdAsync(_inputChannelType.Value, _inputChannelId);
-        SetChannel(channel);
+            _logger.LogInformation($"Load channel with id: {_inputChannelId}, type: {_inputChannelType}");
 
-        LoadMessages();
+            var client = await _chatService.GetClientWhenReadyAsync();
+            var channel = await client.GetOrCreateChannelWithIdAsync(_inputChannelType.Value, _inputChannelId);
+            SetChannel(channel);
 
-        Title = _channel.GenerateChannelTitle(TitleMaxCharCount);
+            LoadMessages();
+
+            Title = _channel.GenerateChannelTitle(TitleMaxCharCount);
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     private void LoadMessages()
@@ -141,15 +157,13 @@ public partial class ChannelVM : BaseViewModel, IDisposable
     //Todo: move to factory service
     private void AddMessage(IStreamMessage message)
     {
-        var vm = new MessageVM(message);
+        var vm = _viewModelFactory.CreateMessageVM(message);
 
         var previousMessage = _messages.LastOrDefault();
         if(previousMessage != null && previousMessage.Message.User == message.User)
         {
             previousMessage.ShowAuthor = false;
         }
-
-        Console.WriteLine($"previousMessage: {previousMessage}, prev user: {previousMessage?.Message.User.Id}, user: {message.User.Id}, vm.ShowAuthor {vm.ShowAuthor}");
 
         _messages.Add(vm);
     }

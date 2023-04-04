@@ -31,7 +31,7 @@ namespace StreamChatMaui.Services
             UpdateServiceAsync().LogIfFailed(_logger);
         }
 
-        public async Task<IStreamChatClient> GetClientWhenReady()
+        public async Task<IStreamChatClient> GetClientWhenReadyAsync()
         {
             if (_client.IsConnected)
             {

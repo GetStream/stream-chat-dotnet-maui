@@ -4,33 +4,41 @@
              xmlns:viewmodels="clr-namespace:StreamChatMaui.ViewModels"
              xmlns:views="clr-namespace:StreamChatMaui.Views"
              x:Class="StreamChatMaui.Views.MainPage"
-             x:DataType="viewmodels:MainPageVM">
+             x:DataType="viewmodels:MainPageVM"             >
 
-    <CollectionView 
-        x:Name="ChannelsList"
-        Background="Transparent"
-        ItemsSource="{Binding Channels}"
-        SelectionMode="Single">
+    <Grid>
 
-        <CollectionView.ItemTemplate>
-            <DataTemplate x:DataType="viewmodels:ChannelItemVM">
-                <Frame Style="{StaticResource ChannelItem_Box}">
-                    <VerticalStackLayout Padding="5">
-                        <Label Text="{Binding Title}" Style="{StaticResource ChannelItem_Title}"/>
-                        <Label Text="{Binding Detail}" Style="{StaticResource ChannelItem_Description}"/>
-                        <BoxView Color="LightGray" HeightRequest="1" Margin="0,5,0,0" />
-                    </VerticalStackLayout>
-                    <Frame.GestureRecognizers>
-                        <TapGestureRecognizer 
+        <ActivityIndicator Grid.Row="0" IsRunning="{Binding IsBusy}" WidthRequest="100" HeightRequest="100" VerticalOptions="Start" />
+
+        <CollectionView
+            Grid.Row="0"
+            x:Name="ChannelsList"
+            Background="Transparent"
+            ItemsSource="{Binding Channels}"
+            SelectionMode="Single">
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="viewmodels:ChannelItemVM">
+                    <Frame Style="{StaticResource ChannelItem_Box}">
+                        <VerticalStackLayout Padding="5">
+                            <Label Text="{Binding Title}" Style="{StaticResource ChannelItem_Title}"/>
+                            <Label Text="{Binding Detail}" Style="{StaticResource ChannelItem_Description}"/>
+                            <BoxView Color="LightGray" HeightRequest="1" Margin="0,5,0,0" />
+                        </VerticalStackLayout>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer 
                             NumberOfTapsRequired="1" 
                             CommandParameter="{Binding .}" 
                             Command="{Binding Path=OpenChannelCommand, Source={RelativeSource AncestorType={x:Type viewmodels:MainPageVM} }}"/>
-                    </Frame.GestureRecognizers>
-                </Frame>
+                        </Frame.GestureRecognizers>
+                    </Frame>
 
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
 
-    </CollectionView>
+        </CollectionView>
+
+    </Grid>
+
 
 </ContentPage>

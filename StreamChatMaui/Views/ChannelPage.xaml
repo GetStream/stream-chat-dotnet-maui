@@ -12,6 +12,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="70" />
         </Grid.RowDefinitions>
+        <ActivityIndicator Grid.Row="0" IsRunning="{Binding IsBusy}" WidthRequest="100" HeightRequest="100" VerticalOptions="Start" />
         <CollectionView 
         x:Name="MessagesList"
         Grid.Row="0"
@@ -22,16 +23,27 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="viewmodels:MessageVM">
 
-                       <VerticalStackLayout Padding="5">
+                    <VerticalStackLayout Style="{StaticResource ChannelPage_Message}">
 
-                        <Frame HasShadow="True" BorderColor="LightGray" Padding="10" Background="white" CornerRadius="10"  >
+                        <Frame>
 
-                            <Label Grid.Row="0" Text="{Binding Text}" TextColor="Black" />
+                            <Label Grid.Row="0" Text="{Binding Text}" Style="{StaticResource ChannelPage_MessageText}" />
 
+                            <Frame.Style>
+                                <Style TargetType="Frame" BasedOn="{StaticResource ChannelPage_MessageFrame}">
+                                    <Style.Triggers>
+                                        <DataTrigger TargetType="Frame"
+                                                     Binding="{Binding IsLocalUserMessage}"
+                                                     Value="True">
+                                            <Setter Property="BackgroundColor" Value="LightGray"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Frame.Style>
 
                         </Frame>
-                           
-                        <HorizontalStackLayout VerticalOptions="Center" Padding="5" Spacing="10" IsVisible="{Binding ShowAuthor}">
+
+                        <HorizontalStackLayout IsVisible="{Binding ShowAuthor}" Style="{StaticResource ChannelPage_Author}">
 
                             <Image Source="user.png" WidthRequest="15" HeightRequest="15"  />
                             <Label Grid.Row="1" Text="{Binding Author}" TextColor="LightGray"/>
