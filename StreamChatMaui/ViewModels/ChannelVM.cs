@@ -102,9 +102,7 @@ public partial class ChannelVM : BaseViewModel, IDisposable
             await _channel.SendNewMessageAsync(MessageInput);
             MessageInput = string.Empty;
 
-            // Workaround to hide keyboard on mobile
-            IsEntryEnabled = false;
-            IsEntryEnabled = true;
+            HideMobileKeyboard();
         }
         finally
         {
@@ -141,7 +139,20 @@ public partial class ChannelVM : BaseViewModel, IDisposable
     }
 
     //Todo: move to factory service
-    private void AddMessage(IStreamMessage message) => _messages.Add(new MessageVM(message));
+    private void AddMessage(IStreamMessage message)
+    {
+        var vm = new MessageVM(message);
+
+        var previousMessage = _messages.LastOrDefault();
+        if(previousMessage != null && previousMessage.Message.User == message.User)
+        {
+            previousMessage.ShowAuthor = false;
+        }
+
+        Console.WriteLine($"previousMessage: {previousMessage}, prev user: {previousMessage?.Message.User.Id}, user: {message.User.Id}, vm.ShowAuthor {vm.ShowAuthor}");
+
+        _messages.Add(vm);
+    }
 
     private void SetChannel(IStreamChannel channel)
     {
@@ -172,6 +183,16 @@ public partial class ChannelVM : BaseViewModel, IDisposable
         _channel.MessageReceived -= OnMessageReceived;
         _channel.MessageUpdated -= OnMessageUpdated;
         _channel.MessageDeleted -= OnMessageDeleted;
+    }
+
+
+    /// <summary>
+    /// Workaround to hide keyboard on mobile
+    /// </summary>
+    private void HideMobileKeyboard()
+    {
+        IsEntryEnabled = false;
+        IsEntryEnabled = true;
     }
 
     private void OnMessageDeleted(IStreamChannel channel, IStreamMessage message, bool isHardDelete)

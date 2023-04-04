@@ -5,5 +5,5 @@
 /// </summary>
 public static class StaticConfig
 {
-	public const string StreamApiKey = "";
+	public const string StreamApiKey = "uh4jxrdvwpb5";
 }

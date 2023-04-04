@@ -22,14 +22,24 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="viewmodels:MessageVM">
 
-                        <Grid Padding="5">
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <Label Grid.Row="0" Text="{Binding Text}" TextColor="DarkGray" />
+                       <VerticalStackLayout Padding="5">
+
+                        <Frame HasShadow="True" BorderColor="LightGray" Padding="10" Background="white" CornerRadius="10"  >
+
+                            <Label Grid.Row="0" Text="{Binding Text}" TextColor="Black" />
+
+
+                        </Frame>
+                           
+                        <HorizontalStackLayout VerticalOptions="Center" Padding="5" Spacing="10" IsVisible="{Binding ShowAuthor}">
+
+                            <Image Source="user.png" WidthRequest="15" HeightRequest="15"  />
                             <Label Grid.Row="1" Text="{Binding Author}" TextColor="LightGray"/>
-                        </Grid>
+
+                        </HorizontalStackLayout>
+
+
+                    </VerticalStackLayout>
 
                 </DataTemplate>
             </CollectionView.ItemTemplate>
@@ -41,8 +51,7 @@
                 <ColumnDefinition Width="50"/>
             </Grid.ColumnDefinitions>
 
-            <Grid Grid.Column="0">
-                <Frame Grid.Row="0"/>
+            <Frame Padding="0">
                 <Entry Grid.Row="0" 
                        Text="{Binding Path=MessageInput, Mode=TwoWay}"
                        IsEnabled="{Binding IsEntryEnabled}"
@@ -50,7 +59,7 @@
                        ReturnCommand="{Binding SendMessageCommand}"
                        ClearButtonVisibility="WhileEditing" 
                        Placeholder="Type new message..."/>
-            </Grid>
+            </Frame>
 
             <Button Grid.Column="1" Text=">" Command="{Binding SendMessageCommand}" />
         </Grid>
