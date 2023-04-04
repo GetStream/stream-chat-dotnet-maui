@@ -52,13 +52,20 @@ public partial class ChannelVM : BaseViewModel, IDisposable
         set => SetProperty(ref _title, value);
     }
 
+    public bool IsEntryEnabled
+    {
+        get => _isEntryEnabled;
+        set => SetProperty(ref _isEntryEnabled, value);
+    }
+
     public IAsyncRelayCommand SendMessageCommand { get; private set; }
 
     public ReadOnlyObservableCollection<MessageVM> Messages { get; }
 
-    public ChannelVM(IStreamChatService chatService, ILogger<ChannelVM> logger)
+    public ChannelVM(IStreamChatService chatService, IViewModelFactory viewModelFactory, ILogger<ChannelVM> logger)
     {
         _chatService = chatService;
+        _viewModelFactory = viewModelFactory;
         _logger = logger;
 
         Messages = new ReadOnlyObservableCollection<MessageVM>(_messages);
@@ -70,6 +77,7 @@ public partial class ChannelVM : BaseViewModel, IDisposable
 
     private readonly ObservableCollection<MessageVM> _messages = new();
     private readonly IStreamChatService _chatService;
+    private readonly IViewModelFactory _viewModelFactory;
     private readonly ILogger<ChannelVM> _logger;
 
     private string _inputChannelId;
@@ -79,7 +87,7 @@ public partial class ChannelVM : BaseViewModel, IDisposable
 
     private string _title = string.Empty;
     private string _messageInput = string.Empty;
-    private bool _isInputFocused;
+    private bool _isEntryEnabled = true;
     private bool _isSending;
 
     private async Task ExecuteSendMessageCommand()
@@ -95,6 +103,8 @@ public partial class ChannelVM : BaseViewModel, IDisposable
         {
             await _channel.SendNewMessageAsync(MessageInput);
             MessageInput = string.Empty;
+
+            HideMobileKeyboard();
         }
         finally
         {
@@ -111,15 +121,29 @@ public partial class ChannelVM : BaseViewModel, IDisposable
             return;
         }
 
-        _logger.LogInformation($"Load channel with id: {_inputChannelId}, type: {_inputChannelType}");
+        try
+        {
+            IsBusy = true;
 
-        var client = await _chatService.GetClientWhenReady();
-        var channel = await client.GetOrCreateChannelWithIdAsync(_inputChannelType.Value, _inputChannelId);
-        SetChannel(channel);
+            _logger.LogInformation($"Load channel with id: {_inputChannelId}, type: {_inputChannelType}");
 
-        LoadMessages();
+            var client = await _chatService.GetClientWhenReadyAsync();
+            var channel = await client.GetOrCreateChannelWithIdAsync(_inputChannelType.Value, _inputChannelId);
+            SetChannel(channel);
 
-        Title = _channel.GenerateChannelTitle(TitleMaxCharCount);
+            LoadMessages();
+
+            Title = _channel.GenerateChannelTitle(TitleMaxCharCount);
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     private void LoadMessages()
@@ -131,7 +155,18 @@ public partial class ChannelVM : BaseViewModel, IDisposable
     }
 
     //Todo: move to factory service
-    private void AddMessage(IStreamMessage message) => _messages.Add(new MessageVM(message));
+    private void AddMessage(IStreamMessage message)
+    {
+        var vm = _viewModelFactory.CreateMessageVM(message);
+
+        var previousMessage = _messages.LastOrDefault();
+        if(previousMessage != null && previousMessage.Message.User == message.User)
+        {
+            previousMessage.ShowAuthor = false;
+        }
+
+        _messages.Add(vm);
+    }
 
     private void SetChannel(IStreamChannel channel)
     {
@@ -162,6 +197,16 @@ public partial class ChannelVM : BaseViewModel, IDisposable
         _channel.MessageReceived -= OnMessageReceived;
         _channel.MessageUpdated -= OnMessageUpdated;
         _channel.MessageDeleted -= OnMessageDeleted;
+    }
+
+
+    /// <summary>
+    /// Workaround to hide keyboard on mobile
+    /// </summary>
+    private void HideMobileKeyboard()
+    {
+        IsEntryEnabled = false;
+        IsEntryEnabled = true;
     }
 
     private void OnMessageDeleted(IStreamChannel channel, IStreamMessage message, bool isHardDelete)

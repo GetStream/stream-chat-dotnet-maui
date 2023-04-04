@@ -4,6 +4,50 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
+    <!-- Custom defined styles -->
+
+    <!-- Main Page (Channels List) -->
+
+    <Style TargetType="Frame" x:Key="ChannelItem_Box">
+        <Setter Property="HasShadow" Value="False" />
+        <Setter Property="Padding" Value="0"/>
+    </Style>
+
+    <Style TargetType="Label" x:Key="ChannelItem_Title">
+        <Setter Property="TextColor" Value="{StaticResource Black}"/>
+        <Setter Property="FontAttributes" Value="Bold"/>
+    </Style>
+
+    <Style TargetType="Label" x:Key="ChannelItem_Description">
+        <Setter Property="TextColor" Value="{StaticResource Gray400}"/>
+    </Style>
+
+    <!-- Channel Page (Messages List) -->
+
+    <Style TargetType="VerticalStackLayout" x:Key="ChannelPage_Message">
+        <Setter Property="Padding" Value="5"/>
+    </Style>
+
+    <Style TargetType="Frame" x:Key="ChannelPage_MessageFrame">
+        <Setter Property="HasShadow" Value="True"/>
+        <Setter Property="BorderColor" Value="LightGray"/>
+        <Setter Property="Padding" Value="10"/>
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="CornerRadius" Value="10"/>
+    </Style>
+
+    <Style TargetType="Label" x:Key="ChannelPage_MessageText">
+        <Setter Property="TextColor" Value="Black"/>
+    </Style>
+
+    <Style TargetType="HorizontalStackLayout" x:Key="ChannelPage_Author">
+        <Setter Property="VerticalOptions" Value="Center"/>
+        <Setter Property="Padding" Value="5"/>
+        <Setter Property="Spacing" Value="10"/>
+    </Style>
+
+    <!-- Default Styles -->
+
     <Style TargetType="ActivityIndicator">
         <Setter Property="Color" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
     </Style>
@@ -26,7 +70,7 @@
     <Style TargetType="Button">
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Primary}}" />
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
-        <Setter Property="FontFamily" Value="OpenSansRegular"/>
+        <Setter Property="FontFamily" Value="SFProRegular"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="CornerRadius" Value="8"/>
         <Setter Property="Padding" Value="14,10"/>
@@ -111,7 +155,7 @@
     <Style TargetType="Entry">
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}" />
         <Setter Property="BackgroundColor" Value="Transparent" />
-        <Setter Property="FontFamily" Value="OpenSansRegular"/>
+        <Setter Property="FontFamily" Value="SFProRegular"/>
         <Setter Property="FontSize" Value="14" />
         <Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray500}}" />
         <Setter Property="MinimumHeightRequest" Value="44"/>
@@ -130,11 +174,8 @@
         </Setter>
     </Style>
 
-    <Style TargetType="Frame">
-        <Setter Property="HasShadow" Value="False" />
-        <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray950}}" />
-        <Setter Property="CornerRadius" Value="8" />
-    </Style>
+
+
 
     <Style TargetType="ImageButton">
         <Setter Property="Opacity" Value="1" />
@@ -160,7 +201,7 @@
     <Style TargetType="Label">
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
         <Setter Property="BackgroundColor" Value="Transparent" />
-        <Setter Property="FontFamily" Value="OpenSansRegular" />
+        <Setter Property="FontFamily" Value="SFProRegular" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>

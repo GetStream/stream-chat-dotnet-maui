@@ -38,20 +38,33 @@ namespace StreamChatMaui.ViewModels
 
         private async Task LoadChannelsAsync()
         {
-            var client = await _chatService.GetClientWhenReady();
-
-            var channels = await client.QueryChannelsAsync();
-
-            if (!channels.Any())
+            try
             {
-                channels = await CreateSampleChannelsAsync(client);
+                IsBusy = true;
+
+                var client = await _chatService.GetClientWhenReadyAsync();
+                var channels = await client.QueryChannelsAsync();
+
+                if (!channels.Any())
+                {
+                    channels = await CreateSampleChannelsAsync(client);
+                }
+
+                //Todo: move to factory service
+                foreach (var c in channels)
+                {
+                    var channelVm = new ChannelItemVM(c);
+                    _channels.Add(channelVm);
+                }
             }
-
-            //Todo: move to factory service
-            foreach (var c in channels)
+            catch (Exception e)
             {
-                var channelVm = new ChannelItemVM(c);
-                _channels.Add(channelVm);
+                Console.WriteLine(e);
+                throw;
+            }
+            finally
+            {
+                IsBusy = false;
             }
         }
 

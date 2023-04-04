@@ -6,8 +6,7 @@ public partial class ChannelDetailsPage : ContentPage
 {
     public ChannelDetailsPage(ChannelVM vm)
     {
-        BindingContext = vm;
-
         InitializeComponent();
+        BindingContext = vm;
     }
 }

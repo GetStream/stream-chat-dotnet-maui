@@ -12,29 +12,50 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="70" />
         </Grid.RowDefinitions>
-        <ListView 
+        <ActivityIndicator Grid.Row="0" IsRunning="{Binding IsBusy}" WidthRequest="100" HeightRequest="100" VerticalOptions="Start" />
+        <CollectionView 
         x:Name="MessagesList"
-        SeparatorColor="Grey"
         Grid.Row="0"
         SelectionMode="None"
-        ItemsSource="{Binding Path=Messages}">
+        ItemsSource="{Binding Path=Messages}"
+        EmptyView="No messages yet. Be the first to write!">
 
-            <ListView.ItemTemplate>
+            <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="viewmodels:MessageVM">
-                    <ViewCell>
-                        <Grid Padding="5">
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <Label Grid.Row="0" Text="{Binding Text}" TextColor="DarkGray" />
-                            <Label Grid.Row="1" Text="{Binding Author}" TextColor="LightGray"/>
-                        </Grid>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
 
-        </ListView>
+                    <VerticalStackLayout Style="{StaticResource ChannelPage_Message}">
+
+                        <Frame>
+
+                            <Label Grid.Row="0" Text="{Binding Text}" Style="{StaticResource ChannelPage_MessageText}" />
+
+                            <Frame.Style>
+                                <Style TargetType="Frame" BasedOn="{StaticResource ChannelPage_MessageFrame}">
+                                    <Style.Triggers>
+                                        <DataTrigger TargetType="Frame"
+                                                     Binding="{Binding IsLocalUserMessage}"
+                                                     Value="True">
+                                            <Setter Property="BackgroundColor" Value="LightGray"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Frame.Style>
+
+                        </Frame>
+
+                        <HorizontalStackLayout IsVisible="{Binding ShowAuthor}" Style="{StaticResource ChannelPage_Author}">
+
+                            <Image Source="user.png" WidthRequest="15" HeightRequest="15"  />
+                            <Label Grid.Row="1" Text="{Binding Author}" TextColor="LightGray"/>
+
+                        </HorizontalStackLayout>
+
+
+                    </VerticalStackLayout>
+
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
         <Grid Grid.Row="1" Padding="10" ColumnSpacing="5">
 
             <Grid.ColumnDefinitions>
@@ -42,13 +63,15 @@
                 <ColumnDefinition Width="50"/>
             </Grid.ColumnDefinitions>
 
-            <Grid Grid.Column="0">
-                <Frame Grid.Row="0"/>
+            <Frame Padding="0">
                 <Entry Grid.Row="0" 
                        Text="{Binding Path=MessageInput, Mode=TwoWay}"
+                       IsEnabled="{Binding IsEntryEnabled}"
+                       ReturnType="Send"
+                       ReturnCommand="{Binding SendMessageCommand}"
                        ClearButtonVisibility="WhileEditing" 
                        Placeholder="Type new message..."/>
-            </Grid>
+            </Frame>
 
             <Button Grid.Column="1" Text=">" Command="{Binding SendMessageCommand}" />
         </Grid>

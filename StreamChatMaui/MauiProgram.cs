@@ -17,6 +17,7 @@ public static class MauiProgram
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+				fonts.AddFont("SF-Pro-Display-Regular.ttf", "SFProRegular");
 			}).UseMauiCommunityToolkit();
 
 #if DEBUG
@@ -26,10 +27,12 @@ public static class MauiProgram
 		// Services
 		builder.Services.AddSingleton<IStreamChatService, StreamChatService>();
 		builder.Services.AddSingleton<RouteUrlFactory>();
+		builder.Services.AddSingleton<IViewModelFactory, ViewModelFactory>();
 		
 		// View models
 		builder.Services.AddSingleton<MainPageVM>();
 		builder.Services.AddTransient<ChannelVM>();
+		builder.Services.AddTransient<MessageVM>();
 
 		// Pages
 		builder.Services.AddSingleton<MainPage>();
