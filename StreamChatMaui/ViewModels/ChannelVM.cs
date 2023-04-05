@@ -116,7 +116,7 @@ public partial class ChannelVM : BaseViewModel, IDisposable
 
     private async Task LoadContentsAsync()
     {
-        if (string.IsNullOrEmpty(_inputChannelId) || !_inputChannelType.HasValue)
+        if (string.IsNullOrEmpty(_inputChannelId) || !_inputChannelType.HasValue || IsBusy)
         {
             return;
         }
