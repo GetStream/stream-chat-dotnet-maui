@@ -12,65 +12,107 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="70" />
         </Grid.RowDefinitions>
-        <ActivityIndicator Grid.Row="0" IsRunning="{Binding IsBusy}" WidthRequest="100" HeightRequest="100" VerticalOptions="Start" />
-        <CollectionView 
-        x:Name="MessagesList"
-        Grid.Row="0"
-        SelectionMode="None"
-        ItemsSource="{Binding Path=Messages}"
-        EmptyView="No messages yet. Be the first to write!">
+        
+        <ActivityIndicator
+            Grid.Row="0"
+            IsRunning="{Binding IsBusy}"
+            WidthRequest="100"
+            HeightRequest="100"
+            VerticalOptions="Start" />
 
-            <CollectionView.ItemTemplate>
+        <Frame 
+            IsVisible="{Binding Path=ShowEmptyView, Source={RelativeSource AncestorType={x:Type viewmodels:ChannelVM}}}"
+            VerticalOptions="FillAndExpand" 
+            HorizontalOptions="FillAndExpand">
+
+            <Label 
+                Text="No messages yet. Be the first to write!" 
+                VerticalOptions="FillAndExpand" 
+                HorizontalOptions="FillAndExpand" 
+                VerticalTextAlignment="Center" 
+                HorizontalTextAlignment="Center"/>
+        </Frame>
+
+        <ListView             
+            x:Name="MessagesList"
+            Grid.Row="0"
+            SelectionMode="None"
+            ItemsSource="{Binding Path=Messages}">
+
+            <ListView.ItemTemplate>
+
                 <DataTemplate x:DataType="viewmodels:MessageVM">
 
-                    <VerticalStackLayout Style="{StaticResource ChannelPage_Message}">
+                    <ViewCell>
 
-                        <Frame>
+                        <ViewCell.ContextActions>
 
-                            <Label Grid.Row="0" Text="{Binding Text}" Style="{StaticResource ChannelPage_MessageText}" />
+                            <MenuItem Text="Delete"/>
+                            <MenuItem Text="Edit"/>
+                            <MenuItem Text="AAAA"/>
+                            <MenuItem Text="Delete"/>
+                            <MenuItem Text="Edit"/>
+                            <MenuItem Text="AAAA"/>
+                            <MenuItem Text="Delete"/>
+                            <MenuItem Text="Edit"/>
+                            <MenuItem Text="AAAA"/>
 
-                            <Frame.Style>
-                                <Style TargetType="Frame" BasedOn="{StaticResource ChannelPage_MessageFrame}">
-                                    <Style.Triggers>
-                                        <DataTrigger TargetType="Frame"
+                        </ViewCell.ContextActions>
+
+                        <VerticalStackLayout Style="{StaticResource ChannelPage_Message}">
+
+                            <Frame x:Name="MessageBox">
+
+                                <Label Text="{Binding Text}" Style="{StaticResource ChannelPage_MessageText}"/>
+
+                                <Frame.Style>
+                                    <Style TargetType="Frame" BasedOn="{StaticResource ChannelPage_MessageFrame}">
+                                        <Style.Triggers>
+                                            <DataTrigger TargetType="Frame"
                                                      Binding="{Binding IsLocalUserMessage}"
                                                      Value="True">
-                                            <Setter Property="BackgroundColor" Value="LightGray"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Frame.Style>
+                                                <Setter Property="BackgroundColor" Value="LightGray" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Frame.Style>
 
-                        </Frame>
+                            </Frame>
 
-                        <HorizontalStackLayout IsVisible="{Binding ShowAuthor}" Style="{StaticResource ChannelPage_Author}">
+                            <HorizontalStackLayout IsVisible="{Binding ShowAuthor}"
+                                               Style="{StaticResource ChannelPage_Author}">
 
-                            <Image Source="user.png" WidthRequest="15" HeightRequest="15"  />
-                            <Label Grid.Row="1" Text="{Binding Author}" TextColor="LightGray"/>
+                                <Image Source="user.png" WidthRequest="15" HeightRequest="15" />
+                                <Label Text="{Binding Author}" TextColor="LightGray" />
 
-                        </HorizontalStackLayout>
+                            </HorizontalStackLayout>
 
 
-                    </VerticalStackLayout>
+                        </VerticalStackLayout>
+
+                    </ViewCell>
 
                 </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+
+            </ListView.ItemTemplate>
+
+        </ListView>
+
         <Grid Grid.Row="1" Padding="10" ColumnSpacing="5">
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="50" />
             </Grid.ColumnDefinitions>
 
             <Frame Padding="0">
-                <Entry Grid.Row="0" 
+                <Entry Grid.Row="0"
                        Text="{Binding Path=MessageInput, Mode=TwoWay}"
                        IsEnabled="{Binding IsEntryEnabled}"
                        ReturnType="Send"
                        ReturnCommand="{Binding SendMessageCommand}"
-                       ClearButtonVisibility="WhileEditing" 
-                       Placeholder="Type new message..."/>
+                       ClearButtonVisibility="WhileEditing"
+                       Placeholder="Type new message..." />
             </Frame>
 
             <Button Grid.Column="1" Text=">" Command="{Binding SendMessageCommand}" />

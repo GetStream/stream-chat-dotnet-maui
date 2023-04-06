@@ -1,4 +1,6 @@
 ﻿using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using StreamChat.Core;
@@ -58,6 +60,12 @@ public partial class ChannelVM : BaseViewModel, IDisposable
         set => SetProperty(ref _isEntryEnabled, value);
     }
 
+    public bool ShowEmptyView
+    {
+        get => _showEmptyView;
+        set => SetProperty(ref _showEmptyView, value);
+    }
+
     public IAsyncRelayCommand SendMessageCommand { get; private set; }
 
     public ReadOnlyObservableCollection<MessageVM> Messages { get; }
@@ -69,6 +77,7 @@ public partial class ChannelVM : BaseViewModel, IDisposable
         _logger = logger;
 
         Messages = new ReadOnlyObservableCollection<MessageVM>(_messages);
+        _messages.CollectionChanged += OnMessagesCollectionChanged;
 
         SendMessageCommand = new AsyncRelayCommand(ExecuteSendMessageCommand, CanSendMessageCommand);
     }
@@ -88,6 +97,7 @@ public partial class ChannelVM : BaseViewModel, IDisposable
     private string _title = string.Empty;
     private string _messageInput = string.Empty;
     private bool _isEntryEnabled = true;
+    private bool _showEmptyView = true;
     private bool _isSending;
 
     private async Task ExecuteSendMessageCommand()
@@ -116,7 +126,7 @@ public partial class ChannelVM : BaseViewModel, IDisposable
 
     private async Task LoadContentsAsync()
     {
-        if (string.IsNullOrEmpty(_inputChannelId) || !_inputChannelType.HasValue)
+        if (string.IsNullOrEmpty(_inputChannelId) || !_inputChannelType.HasValue || IsBusy)
         {
             return;
         }
@@ -154,7 +164,6 @@ public partial class ChannelVM : BaseViewModel, IDisposable
         }
     }
 
-    //Todo: move to factory service
     private void AddMessage(IStreamMessage message)
     {
         var vm = _viewModelFactory.CreateMessageVM(message);
@@ -189,16 +198,15 @@ public partial class ChannelVM : BaseViewModel, IDisposable
 
     private void UnsubscribeFromEvents()
     {
-        if (_channel == null)
+        _messages.CollectionChanged -= OnMessagesCollectionChanged;
+
+        if (_channel != null)
         {
-            return;
+            _channel.MessageReceived -= OnMessageReceived;
+            _channel.MessageUpdated -= OnMessageUpdated;
+            _channel.MessageDeleted -= OnMessageDeleted;
         }
-
-        _channel.MessageReceived -= OnMessageReceived;
-        _channel.MessageUpdated -= OnMessageUpdated;
-        _channel.MessageDeleted -= OnMessageDeleted;
     }
-
 
     /// <summary>
     /// Workaround to hide keyboard on mobile
@@ -225,4 +233,10 @@ public partial class ChannelVM : BaseViewModel, IDisposable
     }
 
     private void OnMessageReceived(IStreamChannel channel, IStreamMessage message) => AddMessage(message);
+
+    private void OnMessagesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    {
+        ShowEmptyView = _messages.Count == 0;
+        Console.WriteLine($"IsEmpty: {ShowEmptyView}");
+    }
 }

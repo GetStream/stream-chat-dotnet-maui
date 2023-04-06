@@ -34,7 +34,7 @@ namespace StreamChatMaui.ViewModels
         private readonly RouteUrlFactory _routeUrlFactory;
 
         private Task ExecuteOpenChannelCommand(ChannelItemVM selectedChannel)
-            => Shell.Current.GoToAsync(_routeUrlFactory.CreateChannelDetailsPageRoute(selectedChannel));
+            => Shell.Current.GoToAsync(_routeUrlFactory.CreateChannelDetailsPageRoute(selectedChannel), animate: false);
 
         private async Task LoadChannelsAsync()
         {
