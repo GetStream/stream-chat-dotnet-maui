@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using StreamChat.Core;
@@ -67,6 +66,8 @@ public partial class ChannelVM : BaseViewModel, IDisposable
     }
 
     public IAsyncRelayCommand SendMessageCommand { get; private set; }
+    public IAsyncRelayCommand<MessageVM> AddMessageReactionCommand { get; private set; }
+    public IAsyncRelayCommand<MessageVM> DeleteMessageCommand { get; private set; }
 
     public ReadOnlyObservableCollection<MessageVM> Messages { get; }
 
@@ -80,6 +81,24 @@ public partial class ChannelVM : BaseViewModel, IDisposable
         _messages.CollectionChanged += OnMessagesCollectionChanged;
 
         SendMessageCommand = new AsyncRelayCommand(ExecuteSendMessageCommand, CanSendMessageCommand);
+        AddMessageReactionCommand = new AsyncRelayCommand<MessageVM>(ExecuteAddMessageReactionCommand, CanExecuteAddMessageReactionCommand);
+        DeleteMessageCommand = new AsyncRelayCommand<MessageVM>(ExecuteDeleteMessageCommand);
+    }
+
+    private async Task ExecuteAddMessageReactionCommand(MessageVM message)
+    {
+        await Task.CompletedTask;
+    }
+
+    private async Task ExecuteDeleteMessageCommand(MessageVM message)
+    {
+        await Task.CompletedTask;
+    }
+
+    private bool CanExecuteAddMessageReactionCommand(MessageVM message)
+    {
+        //Todo: check if such reaction is already added
+        return true;
     }
 
     public void Dispose() => UnsubscribeFromEvents();
@@ -234,9 +253,6 @@ public partial class ChannelVM : BaseViewModel, IDisposable
 
     private void OnMessageReceived(IStreamChannel channel, IStreamMessage message) => AddMessage(message);
 
-    private void OnMessagesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-    {
-        ShowEmptyView = _messages.Count == 0;
-        Console.WriteLine($"IsEmpty: {ShowEmptyView}");
-    }
+    private void OnMessagesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) 
+        => ShowEmptyView = _messages.Count == 0;
 }

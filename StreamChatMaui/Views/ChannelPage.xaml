@@ -37,32 +37,21 @@
             x:Name="MessagesList"
             Grid.Row="0"
             SelectionMode="None"
-            ItemsSource="{Binding Path=Messages}">
+            ItemsSource="{Binding Path=Messages}"
+            SeparatorColor="Transparent"
+            HasUnevenRows="True"
+            RefreshControlColor="Transparent">
 
             <ListView.ItemTemplate>
 
-                <DataTemplate x:DataType="viewmodels:MessageVM">
+                <DataTemplate x:DataType="viewmodels:MessageVM" >
 
-                    <ViewCell>
-
-                        <ViewCell.ContextActions>
-
-                            <MenuItem Text="Delete"/>
-                            <MenuItem Text="Edit"/>
-                            <MenuItem Text="AAAA"/>
-                            <MenuItem Text="Delete"/>
-                            <MenuItem Text="Edit"/>
-                            <MenuItem Text="AAAA"/>
-                            <MenuItem Text="Delete"/>
-                            <MenuItem Text="Edit"/>
-                            <MenuItem Text="AAAA"/>
-
-                        </ViewCell.ContextActions>
+                    <ViewCell x:Name="MessageView" ChildAdded="MessageView_ChildAdded">
 
                         <VerticalStackLayout Style="{StaticResource ChannelPage_Message}">
 
                             <Frame x:Name="MessageBox">
-
+                                
                                 <Label Text="{Binding Text}" Style="{StaticResource ChannelPage_MessageText}"/>
 
                                 <Frame.Style>
@@ -80,13 +69,12 @@
                             </Frame>
 
                             <HorizontalStackLayout IsVisible="{Binding ShowAuthor}"
-                                               Style="{StaticResource ChannelPage_Author}">
+                                            Style="{StaticResource ChannelPage_Author}">
 
                                 <Image Source="user.png" WidthRequest="15" HeightRequest="15" />
-                                <Label Text="{Binding Author}" TextColor="LightGray" />
+                                <Label Text="{Binding Author}" TextColor="LightGray"  />
 
                             </HorizontalStackLayout>
-
 
                         </VerticalStackLayout>
 
