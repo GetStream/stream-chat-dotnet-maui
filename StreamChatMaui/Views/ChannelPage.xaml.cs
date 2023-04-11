@@ -1,14 +1,17 @@
-﻿using StreamChatMaui.ViewModels;
+﻿using StreamChatMaui.Services;
+using StreamChatMaui.ViewModels;
 
 namespace StreamChatMaui.Views;
 
 public partial class ChannelDetailsPage : ContentPage
 {
-    public ChannelDetailsPage(ChannelVM vm)
+    public ChannelDetailsPage(ChannelVM vm, IChatPermissionsService permissionsService)
     {
-        InitializeComponent();
-        BindingContext = vm;
+        _permissionsService = permissionsService;
         _vm = vm;
+
+        InitializeComponent();
+        BindingContext = _vm;
     }
 
     public void MessageView_ChildAdded(object sender, ElementEventArgs e)
@@ -33,6 +36,7 @@ public partial class ChannelDetailsPage : ContentPage
     };
 
     private readonly ChannelVM _vm;
+    private readonly IChatPermissionsService _permissionsService;
 
     /// <summary>
     /// We delay ContextActions generation until here because <see cref="MessageView_ChildAdded"/> has not bounded data yet

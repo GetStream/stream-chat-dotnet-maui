@@ -26,6 +26,7 @@ public static class MauiProgram
 		
 		// Services
 		builder.Services.AddSingleton<IStreamChatService, StreamChatService>();
+		builder.Services.AddSingleton<IChatPermissionsService, ChatPermissionsService>();
 		builder.Services.AddSingleton<RouteUrlFactory>();
 		builder.Services.AddSingleton<IViewModelFactory, ViewModelFactory>();
 		

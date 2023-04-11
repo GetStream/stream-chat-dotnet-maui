@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using StreamChat.Core;
+using StreamChat.Core.Exceptions;
 using StreamChat.Core.StatefulModels;
 using StreamChatMaui.Services;
 using StreamChatMaui.Utils;
@@ -71,9 +72,10 @@ public partial class ChannelVM : BaseViewModel, IDisposable
 
     public ReadOnlyObservableCollection<MessageVM> Messages { get; }
 
-    public ChannelVM(IStreamChatService chatService, IViewModelFactory viewModelFactory, ILogger<ChannelVM> logger)
+    public ChannelVM(IStreamChatService chatService, IChatPermissionsService permissionsService, IViewModelFactory viewModelFactory, ILogger<ChannelVM> logger)
     {
         _chatService = chatService;
+        _permissionsService = permissionsService;
         _viewModelFactory = viewModelFactory;
         _logger = logger;
 
@@ -90,9 +92,31 @@ public partial class ChannelVM : BaseViewModel, IDisposable
         await Task.CompletedTask;
     }
 
-    private async Task ExecuteDeleteMessageCommand(MessageVM message)
+    private async Task ExecuteDeleteMessageCommand(MessageVM messageVm)
     {
-        await Task.CompletedTask;
+        var client = await _chatService.GetClientWhenReadyAsync();
+        var canDelete = await _permissionsService.CanDeleteMessageAsync(messageVm.Message);
+        if (!canDelete)
+        {
+            throw new InvalidOperationException($"User `{client.LocalUserData.UserId}` is not allowed to delete message {messageVm.Message.Id} from Channel with Cid: {messageVm.Message.Cid}");
+        }
+
+        var snippet = messageVm.Text.TakeSnippet(40);
+        var confirmed = await Application.Current.MainPage.DisplayAlert("Delete message", $"Are you sure you want to delete message `{snippet}`? <b>This action cannot be undone.</b>", "Yes", "No");
+        if (!confirmed)
+        {
+            return;
+        }
+
+        try
+        {
+            await messageVm.Message.SoftDeleteAsync();
+        }
+        catch (StreamApiException streamApiException)
+        {
+            Console.WriteLine(streamApiException.Message);
+            throw;
+        }
     }
 
     private bool CanExecuteAddMessageReactionCommand(MessageVM message)
@@ -105,6 +129,7 @@ public partial class ChannelVM : BaseViewModel, IDisposable
 
     private readonly ObservableCollection<MessageVM> _messages = new();
     private readonly IStreamChatService _chatService;
+    private readonly IChatPermissionsService _permissionsService;
     private readonly IViewModelFactory _viewModelFactory;
     private readonly ILogger<ChannelVM> _logger;
 
