@@ -47,7 +47,7 @@ public class MessageVM : BaseViewModel
 
     public void Refresh()
     {
-        Text = Message.Text;
+        Text = Message.IsDeleted ? "This message was deleted." : Message.Text;
         Author = Message.User.Id;
     }
 

@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using StreamChatMaui.ViewModels;
+﻿using StreamChatMaui.ViewModels;
 
 namespace StreamChatMaui.Views;
 

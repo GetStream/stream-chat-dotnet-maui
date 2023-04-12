@@ -1,10 +1,11 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using StreamChat.Core;
+using StreamChat.Core.Exceptions;
 using StreamChat.Core.StatefulModels;
+using StreamChatMaui.Commands;
 using StreamChatMaui.Services;
 using StreamChatMaui.Utils;
 
@@ -67,12 +68,15 @@ public partial class ChannelVM : BaseViewModel, IDisposable
     }
 
     public IAsyncRelayCommand SendMessageCommand { get; private set; }
+    public IAsyncRelayCommand<AddOrRemoveReactionCommandArgs> AddOrRemoveMessageReactionCommand { get; private set; }
+    public IAsyncRelayCommand<MessageVM> DeleteMessageCommand { get; private set; }
 
     public ReadOnlyObservableCollection<MessageVM> Messages { get; }
 
-    public ChannelVM(IStreamChatService chatService, IViewModelFactory viewModelFactory, ILogger<ChannelVM> logger)
+    public ChannelVM(IStreamChatService chatService, IChatPermissionsService chatPermissionsService, IViewModelFactory viewModelFactory, ILogger<ChannelVM> logger)
     {
         _chatService = chatService;
+        _chatPermissions = chatPermissionsService;
         _viewModelFactory = viewModelFactory;
         _logger = logger;
 
@@ -80,12 +84,57 @@ public partial class ChannelVM : BaseViewModel, IDisposable
         _messages.CollectionChanged += OnMessagesCollectionChanged;
 
         SendMessageCommand = new AsyncRelayCommand(ExecuteSendMessageCommand, CanSendMessageCommand);
+        AddOrRemoveMessageReactionCommand = new AsyncRelayCommand<AddOrRemoveReactionCommandArgs>(ExecuteAddOrRemoveMessageReactionCommand);
+        DeleteMessageCommand = new AsyncRelayCommand<MessageVM>(ExecuteDeleteMessageCommand);
+    }
+
+    private async Task ExecuteAddOrRemoveMessageReactionCommand(AddOrRemoveReactionCommandArgs args)
+    {
+        var mesage = args.Message;
+        var hasReaction = mesage.ReactionScores.ContainsKey(args.Reaction);
+
+        if (hasReaction)
+        {
+            await mesage.DeleteReactionAsync(args.Reaction);
+        }
+        else
+        {
+            await mesage.SendReactionAsync(args.Reaction);
+        }
+    }
+
+    private async Task ExecuteDeleteMessageCommand(MessageVM messageVm)
+    {
+        var client = await _chatService.GetClientWhenReadyAsync();
+        var canDelete = _chatPermissions.CanDelete(messageVm.Message);
+        if (!canDelete)
+        {
+            throw new InvalidOperationException($"User `{client.LocalUserData.UserId}` is not allowed to delete message {messageVm.Message.Id} from Channel with Cid: {messageVm.Message.Cid}");
+        }
+
+        var snippet = messageVm.Text.TakeSnippet(40);
+        var confirmed = await Application.Current.MainPage.DisplayAlert("Delete message", $"Are you sure you want to delete message `{snippet}`? This action cannot be undone.", "Yes", "No");
+        if (!confirmed)
+        {
+            return;
+        }
+
+        try
+        {
+            await messageVm.Message.SoftDeleteAsync();
+        }
+        catch (StreamApiException streamApiException)
+        {
+            Console.WriteLine(streamApiException.Message);
+            throw;
+        }
     }
 
     public void Dispose() => UnsubscribeFromEvents();
 
     private readonly ObservableCollection<MessageVM> _messages = new();
     private readonly IStreamChatService _chatService;
+    private readonly IChatPermissionsService _chatPermissions;
     private readonly IViewModelFactory _viewModelFactory;
     private readonly ILogger<ChannelVM> _logger;
 
@@ -145,7 +194,7 @@ public partial class ChannelVM : BaseViewModel, IDisposable
 
             Title = _channel.GenerateChannelTitle(TitleMaxCharCount);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             Console.WriteLine(e);
             throw;
@@ -169,7 +218,7 @@ public partial class ChannelVM : BaseViewModel, IDisposable
         var vm = _viewModelFactory.CreateMessageVM(message);
 
         var previousMessage = _messages.LastOrDefault();
-        if(previousMessage != null && previousMessage.Message.User == message.User)
+        if (previousMessage != null && previousMessage.Message.User == message.User)
         {
             previousMessage.ShowAuthor = false;
         }
@@ -219,10 +268,19 @@ public partial class ChannelVM : BaseViewModel, IDisposable
 
     private void OnMessageDeleted(IStreamChannel channel, IStreamMessage message, bool isHardDelete)
     {
-        var msg = _messages.FirstOrDefault(m => m.Message == message);
-        if (msg != null)
+        var msgVm = _messages.FirstOrDefault(m => m.Message == message);
+        if (msgVm == null)
         {
-            _messages.Remove(msg);
+            return;
+        }
+
+        if (isHardDelete)
+        {
+            _messages.Remove(msgVm);
+        }
+        else
+        {
+            msgVm.Refresh();
         }
     }
 
@@ -235,8 +293,5 @@ public partial class ChannelVM : BaseViewModel, IDisposable
     private void OnMessageReceived(IStreamChannel channel, IStreamMessage message) => AddMessage(message);
 
     private void OnMessagesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-    {
-        ShowEmptyView = _messages.Count == 0;
-        Console.WriteLine($"IsEmpty: {ShowEmptyView}");
-    }
+        => ShowEmptyView = _messages.Count == 0;
 }

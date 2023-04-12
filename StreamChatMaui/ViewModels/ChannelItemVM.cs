@@ -56,7 +56,7 @@ public class ChannelItemVM : BaseViewModel
     /// </summary>
     private string GenerateDetail()
     {
-        var lastMessage = _channel.Messages.LastOrDefault();
+        var lastMessage = _channel.Messages.LastOrDefault(m => !m.IsDeleted);
         if (lastMessage == null)
         {
             return string.Empty;
