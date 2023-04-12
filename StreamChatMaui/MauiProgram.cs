@@ -31,12 +31,12 @@ public static class MauiProgram
 		builder.Services.AddSingleton<IViewModelFactory, ViewModelFactory>();
 		
 		// View models
-		builder.Services.AddSingleton<MainPageVM>();
+		builder.Services.AddTransient<MainPageVM>();
 		builder.Services.AddTransient<ChannelVM>();
 		builder.Services.AddTransient<MessageVM>();
 
 		// Pages
-		builder.Services.AddSingleton<MainPage>();
+		builder.Services.AddTransient<MainPage>();
 		builder.Services.AddTransient<ChannelDetailsPage>();
 
 		return builder.Build();
