@@ -2,8 +2,14 @@
 
 namespace StreamChatMaui.Services
 {
+    /// <summary>
+    /// Service for checking if certain actions are allowed to execute in chat
+    /// </summary>
     public interface IChatPermissionsService
     {
-        Task<bool> CanDeleteMessageAsync(IStreamMessage message);
+        bool IsReady { get; }
+
+        bool CanDelete(IStreamMessage message);
+        bool CanEdit(IStreamMessage message);
     }
 }

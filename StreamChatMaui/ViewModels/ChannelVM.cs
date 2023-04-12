@@ -95,14 +95,14 @@ public partial class ChannelVM : BaseViewModel, IDisposable
     private async Task ExecuteDeleteMessageCommand(MessageVM messageVm)
     {
         var client = await _chatService.GetClientWhenReadyAsync();
-        var canDelete = await _permissionsService.CanDeleteMessageAsync(messageVm.Message);
+        var canDelete = _permissionsService.CanDelete(messageVm.Message);
         if (!canDelete)
         {
             throw new InvalidOperationException($"User `{client.LocalUserData.UserId}` is not allowed to delete message {messageVm.Message.Id} from Channel with Cid: {messageVm.Message.Cid}");
         }
 
         var snippet = messageVm.Text.TakeSnippet(40);
-        var confirmed = await Application.Current.MainPage.DisplayAlert("Delete message", $"Are you sure you want to delete message `{snippet}`? <b>This action cannot be undone.</b>", "Yes", "No");
+        var confirmed = await Application.Current.MainPage.DisplayAlert("Delete message", $"Are you sure you want to delete message `{snippet}`? This action cannot be undone.", "Yes", "No");
         if (!confirmed)
         {
             return;

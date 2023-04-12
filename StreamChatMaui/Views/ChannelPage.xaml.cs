@@ -1,17 +1,23 @@
-﻿using StreamChatMaui.Services;
+﻿using Microsoft.Extensions.Logging;
+using StreamChatMaui.Services;
 using StreamChatMaui.ViewModels;
 
 namespace StreamChatMaui.Views;
 
 public partial class ChannelDetailsPage : ContentPage
 {
-    public ChannelDetailsPage(ChannelVM vm, IChatPermissionsService permissionsService)
+    public ChannelDetailsPage(ChannelVM vm, IChatPermissionsService permissionsService, ILogger<ChannelDetailsPage> logger)
     {
         _permissionsService = permissionsService;
         _vm = vm;
 
         InitializeComponent();
         BindingContext = _vm;
+
+        if (!_permissionsService.IsReady)
+        {
+            logger.LogError("Permissions service is not ready to use");
+        }
     }
 
     public void MessageView_ChildAdded(object sender, ElementEventArgs e)
@@ -41,7 +47,7 @@ public partial class ChannelDetailsPage : ContentPage
     /// <summary>
     /// We delay ContextActions generation until here because <see cref="MessageView_ChildAdded"/> has not bounded data yet
     /// </summary>
-    private void ViewCell_Appearing(object sender, EventArgs e)
+    private void ViewCell_Appearing(object sender, EventArgs eventArgs)
     {
         var viewCell = sender as ViewCell;
         viewCell.Appearing -= ViewCell_Appearing;
@@ -54,14 +60,16 @@ public partial class ChannelDetailsPage : ContentPage
             Text = "Edit",
         });
 
-        //Todo: don't show if no permissions to delete
-        contextActions.Add(new MenuItem
+        if (_permissionsService.CanDelete(messageVm.Message))
         {
-            Text = "Delete",
-            Command = _vm.DeleteMessageCommand,
-            CommandParameter = messageVm
+            contextActions.Add(new MenuItem
+            {
+                Text = "Delete",
+                Command = _vm.DeleteMessageCommand,
+                CommandParameter = messageVm
 
-        });
+            });
+        }
 
         foreach (var emoji in _popularEmojis)
         {
