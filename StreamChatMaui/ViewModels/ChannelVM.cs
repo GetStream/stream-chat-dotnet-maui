@@ -263,10 +263,19 @@ public partial class ChannelVM : BaseViewModel, IDisposable
 
     private void OnMessageDeleted(IStreamChannel channel, IStreamMessage message, bool isHardDelete)
     {
-        var msg = _messages.FirstOrDefault(m => m.Message == message);
-        if (msg != null)
+        var msgVm = _messages.FirstOrDefault(m => m.Message == message);
+        if (msgVm == null)
         {
-            _messages.Remove(msg);
+            return;
+        }
+
+        if (isHardDelete)
+        {
+            _messages.Remove(msgVm);
+        }
+        else
+        {
+            msgVm.Refresh();
         }
     }
 
