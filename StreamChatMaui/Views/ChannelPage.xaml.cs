@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using StreamChatMaui.Commands;
 using StreamChatMaui.Services;
 using StreamChatMaui.ViewModels;
 
@@ -6,9 +7,10 @@ namespace StreamChatMaui.Views;
 
 public partial class ChannelDetailsPage : ContentPage
 {
-    public ChannelDetailsPage(ChannelVM vm, IChatPermissionsService chatPermissionsService, ILogger<ChannelDetailsPage> logger)
+    public ChannelDetailsPage(ChannelVM vm, IChatPermissionsService chatPermissionsService, ReactionsRepository reactionsRepository, ILogger<ChannelDetailsPage> logger)
     {
         _chatPermissions = chatPermissionsService;
+        _reactionsRepository = reactionsRepository;
         _vm = vm;
 
         InitializeComponent();
@@ -26,23 +28,9 @@ public partial class ChannelDetailsPage : ContentPage
         viewCell.Appearing += ViewCell_Appearing;
     }
 
-    //Todo: move to config
-    private readonly string[] _popularEmojis = new string[]
-    {
-        "\U0001F602", // Face with tears of joy
-        "\U0001F62D", // Loudly crying face
-        "\U0001F60D", // Smiling face with heart-eyes
-        "\U0001F618", // Face blowing a kiss
-        "\U0001F60A", // Smiling face with smiling eyes
-        "\U0001F44D", // Thumbs up
-        "\U0001F44E", // Thumbs down
-        "\U0001F644", // Rolling eyes
-        "\U0001F914", // Thinking face
-        "\U0001F610" // Neutral face
-    };
-
     private readonly ChannelVM _vm;
     private readonly IChatPermissionsService _chatPermissions;
+    private readonly ReactionsRepository _reactionsRepository;
 
     /// <summary>
     /// We delay ContextActions generation until here because <see cref="MessageView_ChildAdded"/> has not bounded data yet
@@ -78,13 +66,13 @@ public partial class ChannelDetailsPage : ContentPage
             });
         }
 
-        foreach (var emoji in _popularEmojis)
+        foreach (var (key, value) in _reactionsRepository.Reactions)
         {
             contextActions.Add(new MenuItem
             {
-                Text = emoji,
-                Command = _vm.AddMessageReactionCommand,
-                CommandParameter = messageVm
+                Text = value,
+                Command = _vm.AddOrRemoveMessageReactionCommand,
+                CommandParameter = new AddOrRemoveReactionCommandArgs(messageVm.Message, key)
             });
         }
     }

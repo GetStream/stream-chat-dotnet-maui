@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using StreamChat.Core;
 using StreamChat.Core.Exceptions;
 using StreamChat.Core.StatefulModels;
+using StreamChatMaui.Commands;
 using StreamChatMaui.Services;
 using StreamChatMaui.Utils;
 
@@ -67,7 +68,7 @@ public partial class ChannelVM : BaseViewModel, IDisposable
     }
 
     public IAsyncRelayCommand SendMessageCommand { get; private set; }
-    public IAsyncRelayCommand<MessageVM> AddMessageReactionCommand { get; private set; }
+    public IAsyncRelayCommand<AddOrRemoveReactionCommandArgs> AddOrRemoveMessageReactionCommand { get; private set; }
     public IAsyncRelayCommand<MessageVM> DeleteMessageCommand { get; private set; }
 
     public ReadOnlyObservableCollection<MessageVM> Messages { get; }
@@ -83,13 +84,23 @@ public partial class ChannelVM : BaseViewModel, IDisposable
         _messages.CollectionChanged += OnMessagesCollectionChanged;
 
         SendMessageCommand = new AsyncRelayCommand(ExecuteSendMessageCommand, CanSendMessageCommand);
-        AddMessageReactionCommand = new AsyncRelayCommand<MessageVM>(ExecuteAddMessageReactionCommand, CanExecuteAddMessageReactionCommand);
+        AddOrRemoveMessageReactionCommand = new AsyncRelayCommand<AddOrRemoveReactionCommandArgs>(ExecuteAddOrRemoveMessageReactionCommand);
         DeleteMessageCommand = new AsyncRelayCommand<MessageVM>(ExecuteDeleteMessageCommand);
     }
 
-    private async Task ExecuteAddMessageReactionCommand(MessageVM message)
+    private async Task ExecuteAddOrRemoveMessageReactionCommand(AddOrRemoveReactionCommandArgs args)
     {
-        await Task.CompletedTask;
+        var mesage = args.Message;
+        var hasReaction = mesage.ReactionScores.ContainsKey(args.Reaction);
+
+        if (hasReaction)
+        {
+            await mesage.DeleteReactionAsync(args.Reaction);
+        }
+        else
+        {
+            await mesage.SendReactionAsync(args.Reaction);
+        }
     }
 
     private async Task ExecuteDeleteMessageCommand(MessageVM messageVm)
@@ -117,12 +128,6 @@ public partial class ChannelVM : BaseViewModel, IDisposable
             Console.WriteLine(streamApiException.Message);
             throw;
         }
-    }
-
-    private bool CanExecuteAddMessageReactionCommand(MessageVM message)
-    {
-        //Todo: check if such reaction is already added
-        return true;
     }
 
     public void Dispose() => UnsubscribeFromEvents();
@@ -189,7 +194,7 @@ public partial class ChannelVM : BaseViewModel, IDisposable
 
             Title = _channel.GenerateChannelTitle(TitleMaxCharCount);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             Console.WriteLine(e);
             throw;
@@ -213,7 +218,7 @@ public partial class ChannelVM : BaseViewModel, IDisposable
         var vm = _viewModelFactory.CreateMessageVM(message);
 
         var previousMessage = _messages.LastOrDefault();
-        if(previousMessage != null && previousMessage.Message.User == message.User)
+        if (previousMessage != null && previousMessage.Message.User == message.User)
         {
             previousMessage.ShowAuthor = false;
         }
@@ -287,6 +292,6 @@ public partial class ChannelVM : BaseViewModel, IDisposable
 
     private void OnMessageReceived(IStreamChannel channel, IStreamMessage message) => AddMessage(message);
 
-    private void OnMessagesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) 
+    private void OnMessagesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         => ShowEmptyView = _messages.Count == 0;
 }
