@@ -6,15 +6,15 @@ namespace StreamChatMaui.Views;
 
 public partial class ChannelDetailsPage : ContentPage
 {
-    public ChannelDetailsPage(ChannelVM vm, IChatPermissionsService permissionsService, ILogger<ChannelDetailsPage> logger)
+    public ChannelDetailsPage(ChannelVM vm, IChatPermissionsService chatPermissionsService, ILogger<ChannelDetailsPage> logger)
     {
-        _permissionsService = permissionsService;
+        _chatPermissions = chatPermissionsService;
         _vm = vm;
 
         InitializeComponent();
         BindingContext = _vm;
 
-        if (!_permissionsService.IsReady)
+        if (!_chatPermissions.IsReady)
         {
             logger.LogError("Permissions service is not ready to use");
         }
@@ -42,7 +42,7 @@ public partial class ChannelDetailsPage : ContentPage
     };
 
     private readonly ChannelVM _vm;
-    private readonly IChatPermissionsService _permissionsService;
+    private readonly IChatPermissionsService _chatPermissions;
 
     /// <summary>
     /// We delay ContextActions generation until here because <see cref="MessageView_ChildAdded"/> has not bounded data yet
@@ -60,19 +60,21 @@ public partial class ChannelDetailsPage : ContentPage
             return;
         }
 
-        contextActions.Add(new MenuItem
+        if (_chatPermissions.CanEdit(messageVm.Message))
         {
-            Text = "Edit",
-        });
+            contextActions.Add(new MenuItem
+            {
+                Text = "Edit",
+            });
+        }
 
-        if (_permissionsService.CanDelete(messageVm.Message))
+        if (_chatPermissions.CanDelete(messageVm.Message))
         {
             contextActions.Add(new MenuItem
             {
                 Text = "Delete",
                 Command = _vm.DeleteMessageCommand,
                 CommandParameter = messageVm
-
             });
         }
 

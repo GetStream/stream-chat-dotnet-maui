@@ -72,10 +72,10 @@ public partial class ChannelVM : BaseViewModel, IDisposable
 
     public ReadOnlyObservableCollection<MessageVM> Messages { get; }
 
-    public ChannelVM(IStreamChatService chatService, IChatPermissionsService permissionsService, IViewModelFactory viewModelFactory, ILogger<ChannelVM> logger)
+    public ChannelVM(IStreamChatService chatService, IChatPermissionsService chatPermissionsService, IViewModelFactory viewModelFactory, ILogger<ChannelVM> logger)
     {
         _chatService = chatService;
-        _permissionsService = permissionsService;
+        _chatPermissions = chatPermissionsService;
         _viewModelFactory = viewModelFactory;
         _logger = logger;
 
@@ -95,7 +95,7 @@ public partial class ChannelVM : BaseViewModel, IDisposable
     private async Task ExecuteDeleteMessageCommand(MessageVM messageVm)
     {
         var client = await _chatService.GetClientWhenReadyAsync();
-        var canDelete = _permissionsService.CanDelete(messageVm.Message);
+        var canDelete = _chatPermissions.CanDelete(messageVm.Message);
         if (!canDelete)
         {
             throw new InvalidOperationException($"User `{client.LocalUserData.UserId}` is not allowed to delete message {messageVm.Message.Id} from Channel with Cid: {messageVm.Message.Cid}");
@@ -129,7 +129,7 @@ public partial class ChannelVM : BaseViewModel, IDisposable
 
     private readonly ObservableCollection<MessageVM> _messages = new();
     private readonly IStreamChatService _chatService;
-    private readonly IChatPermissionsService _permissionsService;
+    private readonly IChatPermissionsService _chatPermissions;
     private readonly IViewModelFactory _viewModelFactory;
     private readonly ILogger<ChannelVM> _logger;
 
