@@ -55,6 +55,11 @@ public partial class ChannelDetailsPage : ContentPage
         var contextActions = viewCell.ContextActions;
         var messageVm = viewCell.BindingContext as MessageVM;
 
+        if (messageVm.Message.IsDeleted)
+        {
+            return;
+        }
+
         contextActions.Add(new MenuItem
         {
             Text = "Edit",
