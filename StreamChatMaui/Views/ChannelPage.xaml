@@ -12,7 +12,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="70" />
         </Grid.RowDefinitions>
-        
+
         <ActivityIndicator
             Grid.Row="0"
             IsRunning="{Binding IsBusy}"
@@ -51,7 +51,7 @@
                         <VerticalStackLayout Style="{StaticResource ChannelPage_Message}">
 
                             <Frame x:Name="MessageBox">
-                                
+
                                 <Label Text="{Binding Text}" Style="{StaticResource ChannelPage_MessageText}"/>
 
                                 <Frame.Style>
@@ -68,6 +68,31 @@
 
                             </Frame>
 
+                            <CollectionView ItemsSource="{Binding Path=Reactions}" VerticalOptions="Start"
+                                            Margin="5"
+                                            HorizontalOptions="Start"
+                                            HeightRequest="20"
+                                            MaximumHeightRequest="20"
+                                            IsVisible="{Binding HasAnyReactions}">
+                                <CollectionView.ItemsLayout>
+                                    <LinearItemsLayout Orientation="Horizontal" ItemSpacing="5"/>
+                                </CollectionView.ItemsLayout>
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="viewmodels:ReactionVM">
+
+                                        <Label Text="{Binding Unicode}"
+                                               HeightRequest="20"
+                                               WidthRequest="20"
+                                               Padding="0"
+                                               Margin="0"
+                                               VerticalOptions="Start"/>
+
+                                    </DataTemplate>
+
+                                </CollectionView.ItemTemplate>
+
+                            </CollectionView>
+
                             <HorizontalStackLayout IsVisible="{Binding ShowAuthor}"
                                             Style="{StaticResource ChannelPage_Author}">
 
@@ -75,6 +100,8 @@
                                 <Label Text="{Binding Author}" TextColor="LightGray"  />
 
                             </HorizontalStackLayout>
+
+
 
                         </VerticalStackLayout>
 
