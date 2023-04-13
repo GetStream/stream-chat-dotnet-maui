@@ -68,14 +68,12 @@
 
                             </Frame>
 
-
                             <CollectionView ItemsSource="{Binding Path=Reactions}" Margin="5" HorizontalOptions="FillAndExpand">
                                 <CollectionView.ItemsLayout>
                                     <LinearItemsLayout Orientation="Horizontal" ItemSpacing="5"/>
                                 </CollectionView.ItemsLayout>
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate x:DataType="viewmodels:ReactionVM">
-                                        <!--<Image Source="" WidthRequest="10" HeightRequest="10" />-->
                                         <Label Text="{Binding Unicode}"/>
                                     </DataTemplate>
 
