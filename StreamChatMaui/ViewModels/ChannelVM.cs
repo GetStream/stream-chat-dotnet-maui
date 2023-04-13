@@ -243,7 +243,11 @@ public partial class ChannelVM : BaseViewModel, IDisposable
         _channel.MessageReceived += OnMessageReceived;
         _channel.MessageUpdated += OnMessageUpdated;
         _channel.MessageDeleted += OnMessageDeleted;
+        _channel.ReactionAdded += OnReactionChanged;
+        _channel.ReactionRemoved += OnReactionChanged;
+        _channel.ReactionUpdated += OnReactionChanged;
     }
+
 
     private void UnsubscribeFromEvents()
     {
@@ -254,6 +258,9 @@ public partial class ChannelVM : BaseViewModel, IDisposable
             _channel.MessageReceived -= OnMessageReceived;
             _channel.MessageUpdated -= OnMessageUpdated;
             _channel.MessageDeleted -= OnMessageDeleted;
+            _channel.ReactionAdded -= OnReactionChanged;
+            _channel.ReactionRemoved -= OnReactionChanged;
+            _channel.ReactionUpdated -= OnReactionChanged;
         }
     }
 
@@ -294,4 +301,10 @@ public partial class ChannelVM : BaseViewModel, IDisposable
 
     private void OnMessagesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         => ShowEmptyView = _messages.Count == 0;
+
+    private void OnReactionChanged(IStreamChannel channel, IStreamMessage message, StreamChat.Core.Models.StreamReaction reaction)
+    {
+        var msgVm = _messages.FirstOrDefault(m => m.Message == message);
+        msgVm?.Refresh();
+    }
 }

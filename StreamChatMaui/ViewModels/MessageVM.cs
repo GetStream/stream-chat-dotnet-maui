@@ -2,6 +2,7 @@
 using StreamChat.Core.StatefulModels;
 using StreamChatMaui.Services;
 using StreamChatMaui.Utils;
+using System.Collections.ObjectModel;
 
 namespace StreamChatMaui.ViewModels;
 
@@ -36,10 +37,15 @@ public class MessageVM : BaseViewModel
 
     public IStreamMessage Message { get; }
 
-    public MessageVM(IStreamMessage message, IStreamChatService chatService, ILogger<MessageVM> logger)
+    public ReadOnlyObservableCollection<ReactionVM> Reactions { get; }
+
+    public MessageVM(IStreamMessage message, IStreamChatService chatService, ReactionsRepository reactionsRepository, ILogger<MessageVM> logger)
     {
         Message = message ?? throw new ArgumentNullException(nameof(message));
         _chatService = chatService ?? throw new ArgumentNullException(nameof(chatService));
+        _reactionsRepository = reactionsRepository;
+        _logger = logger;
+        Reactions = new ReadOnlyObservableCollection<ReactionVM>(_reactions);
 
         Refresh();
         UpdateIsLocalUserFlagAsync().LogIfFailed(logger);
@@ -49,13 +55,29 @@ public class MessageVM : BaseViewModel
     {
         Text = Message.IsDeleted ? "This message was deleted." : Message.Text;
         Author = Message.User.Id;
+
+        _reactions.Clear();
+
+        foreach(var reaction in Message.ReactionScores)
+        {
+            if (!_reactionsRepository.TryGetValue(reaction.Key, out var unicode)) 
+            {
+                _logger.LogError($"Failed to find reaction unicode symbol for {reaction.Key}");
+                continue;
+            }
+            _reactions.Add(new ReactionVM(reaction.Key, unicode, reaction.Value));
+        }
     }
+
+    private readonly IStreamChatService _chatService;
+    private readonly ReactionsRepository _reactionsRepository;
+    private readonly ILogger<MessageVM> _logger;
+    private readonly ObservableCollection<ReactionVM> _reactions = new();
 
     private bool _showAuthor = true;
     private bool _isLocalUserMessage;
     private string _text;
     private string _author;
-    private readonly IStreamChatService _chatService;
 
     private async Task UpdateIsLocalUserFlagAsync()
     {
