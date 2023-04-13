@@ -91,7 +91,7 @@ public partial class ChannelVM : BaseViewModel, IDisposable
     private async Task ExecuteAddOrRemoveMessageReactionCommand(AddOrRemoveReactionCommandArgs args)
     {
         var mesage = args.Message;
-        var hasReaction = mesage.ReactionScores.ContainsKey(args.Reaction);
+        var hasReaction = mesage.OwnReactions.Any(r => r.Type == args.Reaction);
 
         if (hasReaction)
         {
