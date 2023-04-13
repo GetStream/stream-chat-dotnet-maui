@@ -68,13 +68,25 @@
 
                             </Frame>
 
-                            <CollectionView ItemsSource="{Binding Path=Reactions}" Margin="5" HorizontalOptions="FillAndExpand">
+                            <CollectionView ItemsSource="{Binding Path=Reactions}" VerticalOptions="Start"
+                                            Margin="5"
+                                            HorizontalOptions="Start"
+                                            HeightRequest="20"
+                                            MaximumHeightRequest="20"
+                                            IsVisible="{Binding HasAnyReactions}">
                                 <CollectionView.ItemsLayout>
                                     <LinearItemsLayout Orientation="Horizontal" ItemSpacing="5"/>
                                 </CollectionView.ItemsLayout>
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate x:DataType="viewmodels:ReactionVM">
-                                        <Label Text="{Binding Unicode}"/>
+
+                                        <Label Text="{Binding Unicode}"
+                                               HeightRequest="20"
+                                               WidthRequest="20"
+                                               Padding="0"
+                                               Margin="0"
+                                               VerticalOptions="Start"/>
+
                                     </DataTemplate>
 
                                 </CollectionView.ItemTemplate>

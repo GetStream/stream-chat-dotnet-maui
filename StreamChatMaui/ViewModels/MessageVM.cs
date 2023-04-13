@@ -35,6 +35,12 @@ public class MessageVM : BaseViewModel
         set => SetProperty(ref _isLocalUserMessage, value);
     }
 
+    public bool HasAnyReactions
+    {
+        get => _hasAnyReactions;
+        set => SetProperty(ref _hasAnyReactions, value);
+    }
+
     public IStreamMessage Message { get; }
 
     public ReadOnlyObservableCollection<ReactionVM> Reactions { get; }
@@ -67,6 +73,8 @@ public class MessageVM : BaseViewModel
             }
             _reactions.Add(new ReactionVM(reaction.Key, unicode, reaction.Value));
         }
+
+        HasAnyReactions = _reactions.Count > 0;
     }
 
     private readonly IStreamChatService _chatService;
@@ -76,6 +84,7 @@ public class MessageVM : BaseViewModel
 
     private bool _showAuthor = true;
     private bool _isLocalUserMessage;
+    private bool _hasAnyReactions;
     private string _text;
     private string _author;
 
