@@ -25,6 +25,7 @@ All of the above is handled by the [Stream Chat Service](https://github.com/sier
 
 ### Tested on:
 - Windows
+- Mac Catalyst
 - Android Emulator
 - Android Device
 
