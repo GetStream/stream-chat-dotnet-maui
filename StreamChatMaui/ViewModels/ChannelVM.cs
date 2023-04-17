@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using StreamChat.Core;
@@ -20,6 +21,8 @@ public partial class ChannelVM : BaseViewModel, IDisposable
 {
     //Todo: move to config
     public const int TitleMaxCharCount = 30;
+
+    public event Action<MessageVM> MessageContextMenuRequested;
 
     public string MessageInput
     {
@@ -70,6 +73,7 @@ public partial class ChannelVM : BaseViewModel, IDisposable
     public IAsyncRelayCommand SendMessageCommand { get; private set; }
     public IAsyncRelayCommand<AddOrRemoveReactionCommandArgs> AddOrRemoveMessageReactionCommand { get; private set; }
     public IAsyncRelayCommand<MessageVM> DeleteMessageCommand { get; private set; }
+    public IAsyncRelayCommand<MessageVM> TapMessageCommand { get; private set; }
 
     public ReadOnlyObservableCollection<MessageVM> Messages { get; }
 
@@ -86,6 +90,7 @@ public partial class ChannelVM : BaseViewModel, IDisposable
         SendMessageCommand = new AsyncRelayCommand(ExecuteSendMessageCommand, CanSendMessageCommand);
         AddOrRemoveMessageReactionCommand = new AsyncRelayCommand<AddOrRemoveReactionCommandArgs>(ExecuteAddOrRemoveMessageReactionCommand);
         DeleteMessageCommand = new AsyncRelayCommand<MessageVM>(ExecuteDeleteMessageCommand);
+        TapMessageCommand = new AsyncRelayCommand<MessageVM>(ExecuteTapMessageCommand);
     }
 
     private async Task ExecuteAddOrRemoveMessageReactionCommand(AddOrRemoveReactionCommandArgs args)
@@ -128,6 +133,13 @@ public partial class ChannelVM : BaseViewModel, IDisposable
             Console.WriteLine(streamApiException.Message);
             throw;
         }
+    }
+
+    private Task ExecuteTapMessageCommand(MessageVM messageVm)
+    {
+        MessageContextMenuRequested?.Invoke(messageVm);
+
+        return Task.CompletedTask;
     }
 
     public void Dispose() => UnsubscribeFromEvents();

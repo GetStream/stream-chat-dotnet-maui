@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommunityToolkit.Maui.Views;
+using Microsoft.Extensions.Logging;
 using StreamChatMaui.Commands;
 using StreamChatMaui.Services;
 using StreamChatMaui.ViewModels;
@@ -12,6 +13,7 @@ public partial class ChannelDetailsPage : ContentPage
         _chatPermissions = chatPermissionsService;
         _reactionsRepository = reactionsRepository;
         _vm = vm;
+        _vm.MessageContextMenuRequested += _vm_MessageContextMenuRequested;
 
         InitializeComponent();
         BindingContext = _vm;
@@ -20,12 +22,22 @@ public partial class ChannelDetailsPage : ContentPage
         {
             logger.LogError("Permissions service is not ready to use");
         }
+
+        MessagesList.ChildAdded += MessagesList_ChildAdded;
+
     }
 
-    public void MessageView_ChildAdded(object sender, ElementEventArgs e)
+    private void _vm_MessageContextMenuRequested(MessageVM obj)
     {
-        var viewCell = e.Element.Parent as ViewCell;
-        viewCell.Appearing += ViewCell_Appearing;
+        var popup = new MessageContextPopupView(_reactionsRepository);
+        this.ShowPopup(popup);
+    }
+
+    private void MessagesList_ChildAdded(object sender, ElementEventArgs e)
+    {
+        var ele = e.Element as VerticalStackLayout;
+        var b = ele.BindingContext;
+
     }
 
     private readonly ChannelVM _vm;
@@ -66,14 +78,14 @@ public partial class ChannelDetailsPage : ContentPage
             });
         }
 
-        foreach (var (key, value) in _reactionsRepository.Reactions)
-        {
-            contextActions.Add(new MenuItem
-            {
-                Text = value,
-                Command = _vm.AddOrRemoveMessageReactionCommand,
-                CommandParameter = new AddOrRemoveReactionCommandArgs(messageVm.Message, key)
-            });
-        }
+        //foreach (var (key, value) in _reactionsRepository.Reactions)
+        //{
+        //    contextActions.Add(new MenuItem
+        //    {
+        //        Text = value,
+        //        Command = _vm.AddOrRemoveMessageReactionCommand,
+        //        CommandParameter = new AddOrRemoveReactionCommandArgs(messageVm.Message, key)
+        //    });
+        //}
     }
 }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
+               xmlns:models="clr-namespace:StreamChatMaui.Models"
+               x:Class="StreamChatMaui.Views.MessageContextPopupView">
+    <VerticalStackLayout>
+
+        <Button Text="Delete"/>
+        <Button Text="Edit"/>
+
+        <CollectionView x:Name="ReactionsButtons">
+
+            <CollectionView.ItemTemplate>
+
+                <DataTemplate x:DataType="models:ReactionOption">
+
+                    <Button Text="{Binding Value}"/>
+
+                </DataTemplate>
+                
+            </CollectionView.ItemTemplate>
+            
+        </CollectionView>
+
+
+    </VerticalStackLayout>
+</toolkit:Popup>
