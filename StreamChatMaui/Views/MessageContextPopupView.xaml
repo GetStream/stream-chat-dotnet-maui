@@ -16,7 +16,7 @@
             <CollectionView ItemsSource="{Binding ReactionOptions}">
 
                 <CollectionView.ItemsLayout>
-                    <GridItemsLayout Orientation="Vertical" Span="6" />
+                    <GridItemsLayout Orientation="Vertical" Span="6" HorizontalItemSpacing="5" VerticalItemSpacing="5" />
                 </CollectionView.ItemsLayout>
 
                 <CollectionView.ItemTemplate>
@@ -25,7 +25,7 @@
 
                         <Button Text="{Binding Value}" 
                                 Command="{Binding Path=AddOrRemoveReactionCommand, Source={RelativeSource AncestorType={x:Type views:MessageContextPopupView} }}" 
-                                CommandParameter="{Binding Key}" Padding="2" Margin="0"/>
+                                CommandParameter="{Binding Key}" Padding="2" Margin="2"/>
 
                     </DataTemplate>
 

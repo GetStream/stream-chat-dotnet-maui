@@ -9,12 +9,15 @@ public partial class ChannelDetailsPage : ContentPage
 {
     public ChannelDetailsPage(ChannelVM vm, IChatPermissionsService chatPermissionsService, ReactionsRepository reactionsRepository, ILogger<ChannelDetailsPage> logger)
     {
+        InitializeComponent();
+
         _chatPermissions = chatPermissionsService;
         _reactionsRepository = reactionsRepository;
+        _logger = logger;
         _vm = vm;
-        _vm.MessageContextMenuRequested += MessageContextMenuRequested;
+        _vm.MessageContextMenuRequested += OnMessageContextMenuRequested;
+        MessagesList.Scrolled += OnMessagesListScrolled;
 
-        InitializeComponent();
         BindingContext = _vm;
 
         if (!_chatPermissions.IsReady)
@@ -25,18 +28,44 @@ public partial class ChannelDetailsPage : ContentPage
 
     protected override void OnDisappearing()
     {
-        _vm.MessageContextMenuRequested -= MessageContextMenuRequested;
+        MessagesList.Scrolled -= OnMessagesListScrolled;
+        _vm.MessageContextMenuRequested -= OnMessageContextMenuRequested;
 
         base.OnDisappearing();
-    }
-
-    private void MessageContextMenuRequested(MessageVM messageVm)
-    {
-        var popup = new MessageContextPopupView(_reactionsRepository, messageVm, _vm);
-        this.ShowPopup(popup);
     }
 
     private readonly ChannelVM _vm;
     private readonly IChatPermissionsService _chatPermissions;
     private readonly ReactionsRepository _reactionsRepository;
+    private readonly ILogger<ChannelDetailsPage> _logger;
+
+    private void OnMessagesListScrolled(object sender, ItemsViewScrolledEventArgs e)
+    {
+        if (ShouldLoadOlderMessages(e) && _vm.LoadOlderMessagesCommand.CanExecute(default))
+        {
+            _vm.LoadOlderMessagesCommand.Execute(default);
+        }
+    }
+
+    /// <summary>
+    /// If scrolling upwards and reached the minimum messages threshold -> we should try to load older 
+    /// </summary>
+    private bool ShouldLoadOlderMessages(ItemsViewScrolledEventArgs e)
+    {
+        const int messagesThreshold = 5;
+
+        var isScrollingUpwards = e.VerticalDelta < 0;
+        if (!isScrollingUpwards)
+        {
+            return false;
+        }
+
+        return e.FirstVisibleItemIndex <= messagesThreshold;
+    }
+
+    private void OnMessageContextMenuRequested(MessageVM messageVm)
+    {
+        var popup = new MessageContextPopupView(_reactionsRepository, _chatPermissions, messageVm, _vm);
+        this.ShowPopup(popup);
+    }
 }

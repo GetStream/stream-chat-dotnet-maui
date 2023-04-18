@@ -33,18 +33,16 @@
                 HorizontalTextAlignment="Center"/>
         </Frame>
 
+        <!-- the RemainingItemsThresholdReachedCommand seems buggy in the current version hence it is handled manually through the Scrolled event in the code-behind -->
         <CollectionView             
             x:Name="MessagesList"
             Grid.Row="0"
             SelectionMode="None"
-            RemainingItemsThreshold="5"
-    
             ItemsSource="{Binding Path=Messages}">
 
             <CollectionView.ItemTemplate>
 
                 <DataTemplate x:DataType="viewmodels:MessageVM" >
-
 
                     <VerticalStackLayout Style="{StaticResource ChannelPage_Message}">
 
