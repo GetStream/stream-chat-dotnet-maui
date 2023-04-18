@@ -2,27 +2,39 @@
 <toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                xmlns:toolkit="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
+               xmlns:viewModels="clr-namespace:StreamChatMaui.ViewModels"
                xmlns:models="clr-namespace:StreamChatMaui.Models"
+               xmlns:views="clr-namespace:StreamChatMaui.Views"
                x:Class="StreamChatMaui.Views.MessageContextPopupView">
-    <VerticalStackLayout>
 
-        <Button Text="Delete"/>
-        <Button Text="Edit"/>
+    <Frame Padding="20">
 
-        <CollectionView x:Name="ReactionsButtons">
+        <VerticalStackLayout Spacing="5">
 
-            <CollectionView.ItemTemplate>
+            <Button Text="Delete" Margin="2" Command="{Binding DeleteMessageCommand}"/>
 
-                <DataTemplate x:DataType="models:ReactionOption">
+            <CollectionView ItemsSource="{Binding ReactionOptions}">
 
-                    <Button Text="{Binding Value}"/>
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" Span="6" />
+                </CollectionView.ItemsLayout>
 
-                </DataTemplate>
-                
-            </CollectionView.ItemTemplate>
-            
-        </CollectionView>
+                <CollectionView.ItemTemplate>
 
+                    <DataTemplate x:DataType="models:ReactionOption">
 
-    </VerticalStackLayout>
+                        <Button Text="{Binding Value}" 
+                                Command="{Binding Path=AddOrRemoveReactionCommand, Source={RelativeSource AncestorType={x:Type views:MessageContextPopupView} }}" 
+                                CommandParameter="{Binding Key}" Padding="2" Margin="0"/>
+
+                    </DataTemplate>
+
+                </CollectionView.ItemTemplate>
+
+            </CollectionView>
+
+        </VerticalStackLayout>
+
+    </Frame>
+
 </toolkit:Popup>

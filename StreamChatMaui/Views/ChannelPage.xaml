@@ -46,67 +46,70 @@
                 <DataTemplate x:DataType="viewmodels:MessageVM" >
 
 
-                        <VerticalStackLayout Style="{StaticResource ChannelPage_Message}">
+                    <VerticalStackLayout Style="{StaticResource ChannelPage_Message}">
 
-                            <Frame x:Name="MessageBox">
+                        <Frame x:Name="MessageBox">
 
-                                <Label Text="{Binding Text}" Style="{StaticResource ChannelPage_MessageText}"/>
+                            <Label Text="{Binding Text}" Style="{StaticResource ChannelPage_MessageText}"/>
 
-                                <Frame.Style>
-                                    <Style TargetType="Frame" BasedOn="{StaticResource ChannelPage_MessageFrame}">
-                                        <Style.Triggers>
-                                            <DataTrigger TargetType="Frame"
+                            <Frame.Style>
+                                <Style TargetType="Frame" BasedOn="{StaticResource ChannelPage_MessageFrame}">
+                                    <Style.Triggers>
+                                        <DataTrigger TargetType="Frame"
                                                      Binding="{Binding IsLocalUserMessage}"
                                                      Value="True">
-                                                <Setter Property="BackgroundColor" Value="LightGray" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Frame.Style>
+                                            <Setter Property="BackgroundColor" Value="LightGray" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Frame.Style>
 
-                                <Frame.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding Path=TapMessageCommand, Source={RelativeSource AncestorType={x:Type viewmodels:ChannelVM} }}" 
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Path=TapMessageCommand, Source={RelativeSource AncestorType={x:Type viewmodels:ChannelVM} }}" 
                                                           CommandParameter="{Binding .}"/>
-                                </Frame.GestureRecognizers>
+                                <ClickGestureRecognizer Buttons="Secondary" 
+                                                        Command="{Binding Path=TapMessageCommand, Source={RelativeSource AncestorType={x:Type viewmodels:ChannelVM} }}"
+                                                        CommandParameter="{Binding .}"/>
+                            </Frame.GestureRecognizers>
 
-                            </Frame>
+                        </Frame>
 
-                            <CollectionView ItemsSource="{Binding Path=Reactions}" VerticalOptions="Start"
+                        <CollectionView ItemsSource="{Binding Path=Reactions}" VerticalOptions="Start"
                                             Margin="5"
                                             HorizontalOptions="Start"
                                             HeightRequest="20"
                                             MaximumHeightRequest="20"
                                             IsVisible="{Binding HasAnyReactions}">
-                                <CollectionView.ItemsLayout>
-                                    <LinearItemsLayout Orientation="Horizontal" ItemSpacing="5"/>
-                                </CollectionView.ItemsLayout>
-                                <CollectionView.ItemTemplate>
-                                    <DataTemplate x:DataType="viewmodels:ReactionVM">
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout Orientation="Horizontal" ItemSpacing="5"/>
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="viewmodels:ReactionVM">
 
-                                        <Label Text="{Binding Unicode}"
+                                    <Label Text="{Binding Unicode}"
                                                HeightRequest="20"
                                                WidthRequest="20"
                                                Padding="0"
                                                Margin="0"
                                                VerticalOptions="Start"/>
 
-                                    </DataTemplate>
+                                </DataTemplate>
 
-                                </CollectionView.ItemTemplate>
+                            </CollectionView.ItemTemplate>
 
-                            </CollectionView>
+                        </CollectionView>
 
-                            <HorizontalStackLayout IsVisible="{Binding ShowAuthor}"
+                        <HorizontalStackLayout IsVisible="{Binding ShowAuthor}"
                                             Style="{StaticResource ChannelPage_Author}">
 
-                                <Image Source="user.png" WidthRequest="15" HeightRequest="15" />
-                                <Label Text="{Binding Author}" TextColor="LightGray"  />
+                            <Image Source="user.png" WidthRequest="15" HeightRequest="15" />
+                            <Label Text="{Binding Author}" TextColor="LightGray"  />
 
-                            </HorizontalStackLayout>
+                        </HorizontalStackLayout>
 
 
 
-                        </VerticalStackLayout>
+                    </VerticalStackLayout>
 
 
                 </DataTemplate>
