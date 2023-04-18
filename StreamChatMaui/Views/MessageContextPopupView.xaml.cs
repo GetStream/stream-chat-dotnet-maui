@@ -14,7 +14,9 @@ public partial class MessageContextPopupView : Popup
 
     public IEnumerable<ReactionOption> ReactionOptions => _reactionsRepository.Reactions;
 
-    public MessageContextPopupView(ReactionsRepository reactionsRepository, MessageVM messageVM, ChannelVM channelItemVM)
+    public bool CanDelete { get; private set; }
+
+    public MessageContextPopupView(ReactionsRepository reactionsRepository, IChatPermissionsService permissionsService, MessageVM messageVM, ChannelVM channelItemVM)
     {
         InitializeComponent();
 
@@ -24,6 +26,8 @@ public partial class MessageContextPopupView : Popup
 
         DeleteMessageCommand = new RelayCommand(ExecuteDeleteMessageCommand);
         AddOrRemoveReactionCommand = new RelayCommand<string>(ExecuteAddOrRemoveReactionCommand);
+
+        CanDelete = permissionsService.CanDelete(_messageVM.Message);
 
         BindingContext = this;
     }

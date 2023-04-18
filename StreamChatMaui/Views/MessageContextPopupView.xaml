@@ -11,7 +11,7 @@
 
         <VerticalStackLayout Spacing="5">
 
-            <Button Text="Delete" Margin="2" Command="{Binding DeleteMessageCommand}"/>
+            <Button Text="Delete" Margin="2" Command="{Binding DeleteMessageCommand}" IsVisible="{Binding CanDelete}"/>
 
             <CollectionView ItemsSource="{Binding ReactionOptions}">
 
