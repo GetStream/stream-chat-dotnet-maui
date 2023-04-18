@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
-using StreamChatMaui.Commands;
+﻿using CommunityToolkit.Maui.Views;
+using Microsoft.Extensions.Logging;
 using StreamChatMaui.Services;
 using StreamChatMaui.ViewModels;
 
@@ -9,11 +9,15 @@ public partial class ChannelDetailsPage : ContentPage
 {
     public ChannelDetailsPage(ChannelVM vm, IChatPermissionsService chatPermissionsService, ReactionsRepository reactionsRepository, ILogger<ChannelDetailsPage> logger)
     {
+        InitializeComponent();
+
         _chatPermissions = chatPermissionsService;
         _reactionsRepository = reactionsRepository;
+        _logger = logger;
         _vm = vm;
+        _vm.MessageContextMenuRequested += OnMessageContextMenuRequested;
+        MessagesList.Scrolled += OnMessagesListScrolled;
 
-        InitializeComponent();
         BindingContext = _vm;
 
         if (!_chatPermissions.IsReady)
@@ -22,58 +26,46 @@ public partial class ChannelDetailsPage : ContentPage
         }
     }
 
-    public void MessageView_ChildAdded(object sender, ElementEventArgs e)
+    protected override void OnDisappearing()
     {
-        var viewCell = e.Element.Parent as ViewCell;
-        viewCell.Appearing += ViewCell_Appearing;
+        MessagesList.Scrolled -= OnMessagesListScrolled;
+        _vm.MessageContextMenuRequested -= OnMessageContextMenuRequested;
+
+        base.OnDisappearing();
     }
 
     private readonly ChannelVM _vm;
     private readonly IChatPermissionsService _chatPermissions;
     private readonly ReactionsRepository _reactionsRepository;
+    private readonly ILogger<ChannelDetailsPage> _logger;
+
+    private void OnMessagesListScrolled(object sender, ItemsViewScrolledEventArgs e)
+    {
+        if (ShouldLoadOlderMessages(e) && _vm.LoadOlderMessagesCommand.CanExecute(default))
+        {
+            _vm.LoadOlderMessagesCommand.Execute(default);
+        }
+    }
 
     /// <summary>
-    /// We delay ContextActions generation until here because <see cref="MessageView_ChildAdded"/> has not bounded data yet
+    /// If scrolling upwards and reached the minimum messages threshold -> we should try to load older 
     /// </summary>
-    private void ViewCell_Appearing(object sender, EventArgs eventArgs)
+    private bool ShouldLoadOlderMessages(ItemsViewScrolledEventArgs e)
     {
-        var viewCell = sender as ViewCell;
-        viewCell.Appearing -= ViewCell_Appearing;
+        const int messagesThreshold = 5;
 
-        var contextActions = viewCell.ContextActions;
-        var messageVm = viewCell.BindingContext as MessageVM;
-
-        if (messageVm.Message.IsDeleted)
+        var isScrollingUpwards = e.VerticalDelta < 0;
+        if (!isScrollingUpwards)
         {
-            return;
+            return false;
         }
 
-        if (_chatPermissions.CanEdit(messageVm.Message))
-        {
-            contextActions.Add(new MenuItem
-            {
-                Text = "Edit",
-            });
-        }
+        return e.FirstVisibleItemIndex <= messagesThreshold;
+    }
 
-        if (_chatPermissions.CanDelete(messageVm.Message))
-        {
-            contextActions.Add(new MenuItem
-            {
-                Text = "Delete",
-                Command = _vm.DeleteMessageCommand,
-                CommandParameter = messageVm
-            });
-        }
-
-        foreach (var (key, value) in _reactionsRepository.Reactions)
-        {
-            contextActions.Add(new MenuItem
-            {
-                Text = value,
-                Command = _vm.AddOrRemoveMessageReactionCommand,
-                CommandParameter = new AddOrRemoveReactionCommandArgs(messageVm.Message, key)
-            });
-        }
+    private void OnMessageContextMenuRequested(MessageVM messageVm)
+    {
+        var popup = new MessageContextPopupView(_reactionsRepository, _chatPermissions, messageVm, _vm);
+        this.ShowPopup(popup);
     }
 }

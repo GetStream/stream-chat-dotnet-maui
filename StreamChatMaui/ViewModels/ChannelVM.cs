@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using StreamChat.Core;
@@ -20,6 +21,8 @@ public partial class ChannelVM : BaseViewModel, IDisposable
 {
     //Todo: move to config
     public const int TitleMaxCharCount = 30;
+
+    public event Action<MessageVM> MessageContextMenuRequested;
 
     public string MessageInput
     {
@@ -70,6 +73,8 @@ public partial class ChannelVM : BaseViewModel, IDisposable
     public IAsyncRelayCommand SendMessageCommand { get; private set; }
     public IAsyncRelayCommand<AddOrRemoveReactionCommandArgs> AddOrRemoveMessageReactionCommand { get; private set; }
     public IAsyncRelayCommand<MessageVM> DeleteMessageCommand { get; private set; }
+    public IAsyncRelayCommand<MessageVM> TapMessageCommand { get; private set; }
+    public IAsyncRelayCommand LoadOlderMessagesCommand { get; private set; }
 
     public ReadOnlyObservableCollection<MessageVM> Messages { get; }
 
@@ -86,6 +91,49 @@ public partial class ChannelVM : BaseViewModel, IDisposable
         SendMessageCommand = new AsyncRelayCommand(ExecuteSendMessageCommand, CanSendMessageCommand);
         AddOrRemoveMessageReactionCommand = new AsyncRelayCommand<AddOrRemoveReactionCommandArgs>(ExecuteAddOrRemoveMessageReactionCommand);
         DeleteMessageCommand = new AsyncRelayCommand<MessageVM>(ExecuteDeleteMessageCommand);
+        TapMessageCommand = new AsyncRelayCommand<MessageVM>(ExecuteTapMessageCommand);
+        LoadOlderMessagesCommand = new AsyncRelayCommand(ExecuteLoadOlderMessagesCommand, CanExecuteLoadOlderMessagesCommand);
+    }
+
+    public void Dispose() => UnsubscribeFromEvents();
+
+    private readonly ObservableCollection<MessageVM> _messages = new();
+    private readonly IStreamChatService _chatService;
+    private readonly IChatPermissionsService _chatPermissions;
+    private readonly IViewModelFactory _viewModelFactory;
+    private readonly ILogger<ChannelVM> _logger;
+
+    private string _inputChannelId;
+    private ChannelType? _inputChannelType;
+
+    private IStreamChannel _channel;
+
+    private string _title = string.Empty;
+    private string _messageInput = string.Empty;
+    private bool _isEntryEnabled = true;
+    private bool _showEmptyView = true;
+    private bool _isSending;
+    private bool _isLoadingOlderMessages;
+
+    private async Task ExecuteLoadOlderMessagesCommand()
+    {
+        _logger.LogInformation("--------------------------- Load older messages");
+
+        try
+        {
+            _isLoadingOlderMessages = true;
+            await _channel.LoadOlderMessagesAsync();
+        }
+        finally
+        {
+            _isLoadingOlderMessages = false;
+        }
+    }
+
+    private bool CanExecuteLoadOlderMessagesCommand()
+    {
+        //Todo: check if already loading or if reached timeout
+        return !_isLoadingOlderMessages;
     }
 
     private async Task ExecuteAddOrRemoveMessageReactionCommand(AddOrRemoveReactionCommandArgs args)
@@ -130,24 +178,13 @@ public partial class ChannelVM : BaseViewModel, IDisposable
         }
     }
 
-    public void Dispose() => UnsubscribeFromEvents();
+    private Task ExecuteTapMessageCommand(MessageVM messageVm)
+    {
+        MessageContextMenuRequested?.Invoke(messageVm);
 
-    private readonly ObservableCollection<MessageVM> _messages = new();
-    private readonly IStreamChatService _chatService;
-    private readonly IChatPermissionsService _chatPermissions;
-    private readonly IViewModelFactory _viewModelFactory;
-    private readonly ILogger<ChannelVM> _logger;
+        return Task.CompletedTask;
+    }
 
-    private string _inputChannelId;
-    private ChannelType? _inputChannelType;
-
-    private IStreamChannel _channel;
-
-    private string _title = string.Empty;
-    private string _messageInput = string.Empty;
-    private bool _isEntryEnabled = true;
-    private bool _showEmptyView = true;
-    private bool _isSending;
 
     private async Task ExecuteSendMessageCommand()
     {

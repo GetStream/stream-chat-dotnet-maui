@@ -66,12 +66,12 @@ public class MessageVM : BaseViewModel
 
         foreach(var reaction in Message.ReactionScores)
         {
-            if (!_reactionsRepository.TryGetValue(reaction.Key, out var unicode)) 
+            if (!_reactionsRepository.TryGetValue(reaction.Key, out var item)) 
             {
                 _logger.LogError($"Failed to find reaction unicode symbol for {reaction.Key}");
                 continue;
             }
-            _reactions.Add(new ReactionVM(reaction.Key, unicode, reaction.Value));
+            _reactions.Add(new ReactionVM(reaction.Key, item.Value, reaction.Value));
         }
 
         HasAnyReactions = _reactions.Count > 0;
