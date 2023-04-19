@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using StreamChat.Core.StatefulModels;
+using StreamChat.Libs.Utils;
 using StreamChatMaui.Services;
 using StreamChatMaui.Utils;
 using System.Collections.ObjectModel;
@@ -21,6 +22,12 @@ public class MessageVM : BaseViewModel
     {
         get => _author;
         private set => SetProperty(ref _author, value);
+    }
+
+    public string AuthorImage
+    {
+        get => _authorImage;
+        private set => SetProperty(ref _authorImage, value);
     }
 
     public bool ShowAuthor
@@ -53,14 +60,15 @@ public class MessageVM : BaseViewModel
         _logger = logger;
         Reactions = new ReadOnlyObservableCollection<ReactionVM>(_reactions);
 
-        Refresh();
+        UpdateData();
         UpdateIsLocalUserFlagAsync().LogIfFailed(logger);
     }
 
-    public void Refresh()
+    public void UpdateData()
     {
         Text = Message.IsDeleted ? "This message was deleted." : Message.Text;
         Author = Message.User.Id;
+        AuthorImage = Message.User.Image.IsNullOrEmpty() ? "user.png" : Message.User.Image;
 
         _reactions.Clear();
 
@@ -87,6 +95,7 @@ public class MessageVM : BaseViewModel
     private bool _hasAnyReactions;
     private string _text;
     private string _author;
+    private string _authorImage;
 
     private async Task UpdateIsLocalUserFlagAsync()
     {

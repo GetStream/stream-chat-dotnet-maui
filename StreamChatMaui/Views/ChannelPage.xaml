@@ -73,7 +73,7 @@
                         </Frame>
 
                         <CollectionView ItemsSource="{Binding Path=Reactions}" VerticalOptions="Start"
-                                            Margin="5"
+                                            Margin="5,0,0,0"
                                             HorizontalOptions="Start"
                                             HeightRequest="20"
                                             MaximumHeightRequest="20"
@@ -100,15 +100,12 @@
                         <HorizontalStackLayout IsVisible="{Binding ShowAuthor}"
                                             Style="{StaticResource ChannelPage_Author}">
 
-                            <Image Source="user.png" WidthRequest="15" HeightRequest="15" />
+                            <Image Source="{Binding AuthorImage}" WidthRequest="15" HeightRequest="15" />
                             <Label Text="{Binding Author}" TextColor="LightGray"  />
 
                         </HorizontalStackLayout>
 
-
-
                     </VerticalStackLayout>
-
 
                 </DataTemplate>
 
