@@ -543,6 +543,8 @@ namespace StreamChat.Core.StatefulModels
 
             #endregion
 
+            SortMessagesByCreatedDate();
+
             //StreamTodo should every UpdateFromDto trigger Updated event?
         }
 
@@ -565,6 +567,8 @@ namespace StreamChat.Core.StatefulModels
             _watchers.TryAppendUniqueTrackedObjects(dto.Watchers, cache.Users);
 
             #endregion
+
+            SortMessagesByCreatedDate();
         }
 
         void IUpdateableFrom<ChannelResponseInternalDTO, StreamChannel>.UpdateFromDto(ChannelResponseInternalDTO dto,
@@ -904,6 +908,11 @@ namespace StreamChat.Core.StatefulModels
 
             userRead.Update(createAt);
             //StreamTodo: IMPLEMENT we need to recalculate the unread counts and raise some event
+        }
+
+        private void SortMessagesByCreatedDate()
+        {
+            _messages.Sort((msg1, msg2) => msg1.CreatedAt.CompareTo(msg2.CreatedAt));
         }
 
         private Task InternalBanUserAsync(IStreamUser user, bool isShadowBan = false, string reason = "",
