@@ -1,14 +1,18 @@
 # Example of a .NET MAUI Chat Messaging App using Stream Chat SDK
 Example of using Stream Chat in a .NET MAUI application.
 
-### This demo project currently presents how to:
+### Presented features:
 1. Connect to the Stream Chat Server
 2. Query channels
 3. Show channel messages
 4. Send new messages
+5. Send/Delete reactions
+6. Show user's reactions
+7. Delete a message
+8. Loading older messages when scrolling to the top of the messages list
 
 ## How to run this project?
-1. Create Stream account and start trial
+1. Create a [Stream Account](https://getstream.io/try-for-free/) and start a trial
 2. Go to [Stream's Dashboard](https://dashboard.getstream.io/) and:
     1. Create new app
     2. [Enable Developer Tokens](https://getstream.io/chat/docs/unity/tokens_and_authentication/?language=unity#developer-tokens) (Authorization will not work in this example otherwise!)
