@@ -55,5 +55,5 @@ Each class members are sorted:
 - by accessability modifier: public -> protected -> private
 - then by member type: properties -> fields -> methods
 
-## Interested in a Stream .NET MAUI chat SDK?
+## Interested in a Stream Chat SDK for .NET MAUI?
 Please contact our [Support](https://getstream.io/contact/support/) if you'd wish to receive the latest Stream Chat SDK for .NET MAUI
