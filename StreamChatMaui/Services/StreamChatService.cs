@@ -2,6 +2,7 @@
 using StreamChat.Core;
 using StreamChat.Core.StatefulModels;
 using StreamChat.Libs.Auth;
+using StreamChat.Libs.Utils;
 using StreamChatMaui.Utils;
 
 namespace StreamChatMaui.Services
@@ -12,15 +13,7 @@ namespace StreamChatMaui.Services
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-            //Todo: get userId & token from an authorization endpoint
-            var userName = StreamChatUtils.GenerateRandomName();
-            var userId = StreamChatClient.SanitizeUserId(userName);
-
-            // Developer tokens need to be enabled (check docs below). This is fine for testing but in production user tokens should be provided by a customer endpoint
-            // https://getstream.io/chat/docs/unity/tokens_and_authentication/?language=unity#developer-tokens
-            var userToken = StreamChatClient.CreateDeveloperAuthToken(userId);
-
-            var credentials = new AuthCredentials(StaticConfig.StreamApiKey, userId, userToken);
+            var credentials = StreamChatService.GetAuthCredentials();
 
             _client = StreamChatClient.CreateDefaultClient();
             _client.Connected += OnConnected;
@@ -64,6 +57,10 @@ namespace StreamChatMaui.Services
             _logger.LogInformation($"User connected: {localUserData.UserId}");
         }
 
+        /// <summary>
+        /// Calling _client.Update(); is essential to maintain a live connection with the Stream Chat Server.
+        /// It's very lighweight and can be called often without any performance hit
+        /// </summary>
         private async Task UpdateServiceAsync()
         {
             while (!_cts.IsCancellationRequested)
@@ -81,6 +78,9 @@ namespace StreamChatMaui.Services
             }
         }
 
+        /// <summary>
+        /// Dispose the client in order to signal the server that the user is becoming offline
+        /// </summary>
         private async Task DisposeAsync()
         {
             _logger.LogInformation("Disposing Service");
@@ -93,6 +93,28 @@ namespace StreamChatMaui.Services
 
             _cts.Cancel();
             _client.Dispose();
+        }
+
+        private static AuthCredentials GetAuthCredentials()
+        {
+            var apiKey = StaticConfig.StreamApiKey;
+            var forcedUserId = StaticConfig.ForcedUserId;
+            var forcedUserToken = StaticConfig.ForcedUserToken;
+
+            if (!forcedUserId.IsNullOrEmpty() && !forcedUserToken.IsNullOrEmpty())
+            {
+                return new AuthCredentials(apiKey, forcedUserId, forcedUserToken);
+            }
+
+            //Todo: get userId & token from an authorization endpoint
+            var userName = StreamChatUtils.GenerateRandomName();
+            var userId = StreamChatClient.SanitizeUserId(userName);
+
+            // Developer tokens need to be enabled (check docs below). This is fine for testing but in production user tokens should be provided by a customer endpoint
+            // https://getstream.io/chat/docs/unity/tokens_and_authentication/?language=unity#developer-tokens
+            var userToken = StreamChatClient.CreateDeveloperAuthToken(userId);
+
+            return new AuthCredentials(apiKey, userId, userToken);
         }
     }
 }
