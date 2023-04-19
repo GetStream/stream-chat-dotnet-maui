@@ -1,5 +1,5 @@
 # Example of a .NET MAUI Chat Messaging App using Stream Chat SDK
-Example of using Stream Chat in a .NET MAUI application.
+Example of using [Stream Chat SDK](https://getstream.io/chat/docs/unity/?language=unity) in a .NET MAUI application.
 
 ### Presented features:
 1. Connect to the Stream Chat Server
@@ -18,6 +18,9 @@ Example of using Stream Chat in a .NET MAUI application.
     2. [Enable Developer Tokens](https://getstream.io/chat/docs/unity/tokens_and_authentication/?language=unity#developer-tokens) (Authorization will not work in this example otherwise!)
     3. Take the `Api Key` of your App and save it in the [StreamApiKey field of the StaticConfig](https://github.com/sierpinskid/stream-chat-dotnet-maui/blob/main/StreamChatMaui/StaticConfig.cs) (please note that `api key` is different from `api secret`)
 3. Run the application
+
+## Documentation
+If you wish to futher explore the SDK features, please refer to our [Unity/C# Docs](https://getstream.io/chat/docs/unity/?language=unity). All of the code examples from the Unity docs will work in a .NET MAUI application. Please note that our [.NET/C# Docs](https://getstream.io/chat/docs/dotnet-csharp/?language=csharp) refer to a *Backend* SDK and will not work with .NET MAUI.
 
 ## Stream Chat Service
 The key component that initiates a connection with the Stream Chat Server is the [Stream Chat Service](https://github.com/sierpinskid/stream-chat-dotnet-maui/blob/main/StreamChatMaui/Services/StreamChatService.cs). There are 3 actions required throughout a single session of the app running:
@@ -51,3 +54,6 @@ All of the above is handled by the [Stream Chat Service](https://github.com/sier
 Each class members are sorted:
 - by accessability modifier: public -> protected -> private
 - then by member type: properties -> fields -> methods
+
+## Interested in a Stream .NET MAUI chat SDK?
+Please contact our [Support](https://getstream.io/contact/support/) if you'd wish to receive the latest Stream Chat SDK for .NET MAUI
