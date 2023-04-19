@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using StreamChat.Core;
@@ -117,12 +116,37 @@ public partial class ChannelVM : BaseViewModel, IDisposable
 
     private async Task ExecuteLoadOlderMessagesCommand()
     {
-        _logger.LogInformation("--------------------------- Load older messages");
+        _logger.LogInformation("Load older messages");
 
         try
         {
+            var firstMessage = _channel.Messages.FirstOrDefault();
             _isLoadingOlderMessages = true;
+            var countBefore = _channel.Messages.Count();
             await _channel.LoadOlderMessagesAsync();
+            var countAfter = _channel.Messages.Count();
+
+            _logger.LogInformation($"Loaded {countAfter - countBefore} older messages");
+
+            int previousFirstMessageIndex = -1;
+            for (int i = 0; i < _channel.Messages.Count; i++)
+            {
+                if (_channel.Messages[i] == firstMessage)
+                {
+                    previousFirstMessageIndex = i;
+                    break;
+                }
+            }
+
+            for (int i = previousFirstMessageIndex - 1; i >= 0; i--)
+            {
+                PrependMessage(_channel.Messages[i]);
+            }
+
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message);
         }
         finally
         {
@@ -185,7 +209,6 @@ public partial class ChannelVM : BaseViewModel, IDisposable
         return Task.CompletedTask;
     }
 
-
     private async Task ExecuteSendMessageCommand()
     {
         if (_isSending)
@@ -246,11 +269,11 @@ public partial class ChannelVM : BaseViewModel, IDisposable
     {
         foreach (var m in _channel.Messages)
         {
-            AddMessage(m);
+            AppendMessage(m);
         }
     }
 
-    private void AddMessage(IStreamMessage message)
+    private void AppendMessage(IStreamMessage message)
     {
         var vm = _viewModelFactory.CreateMessageVM(message);
 
@@ -261,6 +284,19 @@ public partial class ChannelVM : BaseViewModel, IDisposable
         }
 
         _messages.Add(vm);
+    }
+
+    private void PrependMessage(IStreamMessage message)
+    {
+        var vm = _viewModelFactory.CreateMessageVM(message);
+
+        var nextMessage = _messages.FirstOrDefault();
+        if (nextMessage != null && nextMessage.Message.User == message.User)
+        {
+            vm.ShowAuthor = false;
+        }
+
+        _messages.Insert(0, vm);
     }
 
     private void SetChannel(IStreamChannel channel)
@@ -284,7 +320,6 @@ public partial class ChannelVM : BaseViewModel, IDisposable
         _channel.ReactionRemoved += OnReactionChanged;
         _channel.ReactionUpdated += OnReactionChanged;
     }
-
 
     private void UnsubscribeFromEvents()
     {
@@ -324,17 +359,17 @@ public partial class ChannelVM : BaseViewModel, IDisposable
         }
         else
         {
-            msgVm.Refresh();
+            msgVm.UpdateData();
         }
     }
 
     private void OnMessageUpdated(IStreamChannel channel, IStreamMessage message)
     {
         var msg = _messages.FirstOrDefault(m => m.Message == message);
-        msg?.Refresh();
+        msg?.UpdateData();
     }
 
-    private void OnMessageReceived(IStreamChannel channel, IStreamMessage message) => AddMessage(message);
+    private void OnMessageReceived(IStreamChannel channel, IStreamMessage message) => AppendMessage(message);
 
     private void OnMessagesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         => ShowEmptyView = _messages.Count == 0;
@@ -342,6 +377,6 @@ public partial class ChannelVM : BaseViewModel, IDisposable
     private void OnReactionChanged(IStreamChannel channel, IStreamMessage message, StreamChat.Core.Models.StreamReaction reaction)
     {
         var msgVm = _messages.FirstOrDefault(m => m.Message == message);
-        msgVm?.Refresh();
+        msgVm?.UpdateData();
     }
 }

@@ -242,6 +242,8 @@ namespace StreamChat.Core.StatefulModels
             AssertCid(eventDto.Cid);
             AssertMessageId(eventDto.Message.Id);
 
+            eventDto.Message.OwnReactions = null;
+
             //StreamTodo: verify if this how we should update the message + what about events for customer to get notified
             Cache.TryCreateOrUpdate(eventDto.Message);
             ReactionAdded?.Invoke(channel, this, reaction);
