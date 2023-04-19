@@ -29,10 +29,10 @@ All of the above is handled by the [Stream Chat Service](https://github.com/sier
 
 ## Screenshots
 <p float="left" align="center">
-  <a href="docs/1.jpg" target="_blank"><img src="docs/1.jpg" style="width: 24%; min-width: 150px;" /></a>
-  <a href="docs/2.jpg" target="_blank"><img src="docs/2.jpg" style="width: 24%; min-width: 150px;" /></a>
-  <a href="docs/3.jpg" target="_blank"><img src="docs/3.jpg" style="width: 24%; min-width: 150px;" /></a>
-  <a href="docs/4.jpg" target="_blank"><img src="docs/4.jpg" style="width: 24%; min-width: 150px;" /></a>
+  <img src="docs/1.jpg" style="width: 24%; min-width: 150px;" />
+  <img src="docs/2.jpg" style="width: 24%; min-width: 150px;" />
+  <img src="docs/3.jpg" style="width: 24%; min-width: 150px;" />
+  <img src="docs/4.jpg" style="width: 24%; min-width: 150px;" />
 </p>
 
 ### Tested on:
