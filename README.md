@@ -28,11 +28,11 @@ The key component that initiates a connection with the Stream Chat Server is the
 All of the above is handled by the [Stream Chat Service](https://github.com/sierpinskid/stream-chat-dotnet-maui/blob/main/StreamChatMaui/Services/StreamChatService.cs).
 
 ## Screenshots
-<p float="left">
-  <a href="docs/1.jpg" target="_blank"><img src="docs/1.jpg" width="220" /></a>
-  <a href="docs/2.jpg" target="_blank"><img src="docs/2.jpg" width="220" /></a>
-  <a href="docs/3.jpg" target="_blank"><img src="docs/3.jpg" width="220" /></a>
-  <a href="docs/4.jpg" target="_blank"><img src="docs/4.jpg" width="220" /></a>
+<p float="left" align="center">
+  <a href="docs/1.jpg" target="_blank"><img src="docs/1.jpg" style="width: 24%; min-width: 150px;" /></a>
+  <a href="docs/2.jpg" target="_blank"><img src="docs/2.jpg" style="width: 24%; min-width: 150px;" /></a>
+  <a href="docs/3.jpg" target="_blank"><img src="docs/3.jpg" style="width: 24%; min-width: 150px;" /></a>
+  <a href="docs/4.jpg" target="_blank"><img src="docs/4.jpg" style="width: 24%; min-width: 150px;" /></a>
 </p>
 
 ### Tested on:
