@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 using System.Threading.Tasks;
-using StreamChat.Libs.Loggers;
+using StreamChat.Libs.Logs;
 
 namespace StreamChat.Libs.Utils
 {

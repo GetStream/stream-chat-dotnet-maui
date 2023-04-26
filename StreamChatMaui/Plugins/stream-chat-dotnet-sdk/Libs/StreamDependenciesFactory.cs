@@ -2,7 +2,7 @@
 using StreamChat.Libs.Auth;
 using StreamChat.Libs.ChatInstanceRunner;
 using StreamChat.Libs.Http;
-using StreamChat.Libs.Loggers;
+using StreamChat.Libs.Logs;
 using StreamChat.Libs.Serialization;
 using StreamChat.Libs.Time;
 using StreamChat.Libs.Websockets;

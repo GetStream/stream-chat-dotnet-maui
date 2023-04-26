@@ -3,7 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using StreamChat.Core.Exceptions;
 using StreamChat.Libs;
-using StreamChat.Libs.Loggers;
+using StreamChat.Libs.Logs;
 
 namespace StreamChat.Core.Helpers
 {

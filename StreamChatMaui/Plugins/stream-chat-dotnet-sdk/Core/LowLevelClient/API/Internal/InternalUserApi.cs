@@ -3,7 +3,7 @@ using StreamChat.Core.InternalDTO.Requests;
 using StreamChat.Core.InternalDTO.Responses;
 using StreamChat.Core.Web;
 using StreamChat.Libs.Http;
-using StreamChat.Libs.Loggers;
+using StreamChat.Libs.Logs;
 using StreamChat.Libs.Serialization;
 
 namespace StreamChat.Core.LowLevelClient.API.Internal

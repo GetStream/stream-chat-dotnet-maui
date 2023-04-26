@@ -1,4 +1,6 @@
-﻿using StreamChat.Core.LowLevelClient.Requests;
+﻿using System;
+using System.Threading.Tasks;
+using StreamChat.Core.LowLevelClient.Requests;
 using StreamChat.Core.LowLevelClient.Responses;
 
 namespace StreamChat.Core.LowLevelClient.API
@@ -48,7 +50,7 @@ namespace StreamChat.Core.LowLevelClient.API
         /// <summary>
         /// <para>Partial updates a user.</para>
         /// If you need to update a subset of properties for a user(s), you can use
-        /// a partial update method. Both <see cref="Set"/> and <see cref="UpdateUserPartialRequest.Unset"/> parameters can be provided to add, modify, or
+        /// a partial update method. Both <see cref="UpdateUserPartialRequest.Set"/> and <see cref="UpdateUserPartialRequest.Unset"/> parameters can be provided to add, modify, or
         /// remove attributes to or from the target user(s). The set and unset parameters can be used separately or combined.
         /// </summary>
         /// <remarks>https://getstream.io/chat/docs/unity/update_users/?language=unity#server-side-partial-update-(batch)</remarks>
