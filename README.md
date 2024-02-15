@@ -41,7 +41,8 @@ All of the above is handled by the [Stream Chat Service](https://github.com/sier
 - Windows
 - Mac Catalyst
 - Android Emulator
-- Android Device
+- Android Device (OnePlus 9 PRO)
+- iOS (IPhone)
 
 ### Steps taken to create this project
 1. Create a new .NET MAUI project
