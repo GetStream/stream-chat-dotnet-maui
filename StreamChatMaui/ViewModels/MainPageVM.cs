@@ -2,6 +2,8 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using StreamChat.Core;
+using StreamChat.Core.QueryBuilders.Filters;
+using StreamChat.Core.QueryBuilders.Filters.Channels;
 using StreamChat.Core.StatefulModels;
 using StreamChatMaui.Services;
 using StreamChatMaui.Utils;
@@ -43,7 +45,14 @@ namespace StreamChatMaui.ViewModels
                 IsBusy = true;
 
                 var client = await _chatService.GetClientWhenReadyAsync();
-                var channels = await client.QueryChannelsAsync();
+
+                var filters = new List<IFieldFilterRule>
+                {
+                    // Return only channels where local user is a member
+                    ChannelFilter.Members.In(client.LocalUserData.UserId),
+                };
+
+                var channels = await client.QueryChannelsAsync(filters);
 
                 if (!channels.Any())
                 {
