@@ -31,7 +31,7 @@ namespace StreamChat.Libs
         
         public static ITokenProvider CreateTokenProvider(TokenProvider.TokenUriHandler urlFactory) => new TokenProvider(CreateHttpClient(), urlFactory);
 
-        public static IStreamChatClientRunner CreateChatClientRunner() => null;
+        public static IStreamChatClientRunner CreateChatClientRunner() => new MauiChatClientRunner();
         
         public static INetworkMonitor CreateNetworkMonitor() => new MauiNetworkMonitor();
     }
