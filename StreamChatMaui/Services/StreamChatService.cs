@@ -17,11 +17,9 @@ namespace StreamChatMaui.Services
 
             _client = StreamChatClient.CreateDefaultClient();
             _client.Connected += OnConnected;
-            _client.ConnectUserAsync(credentials);
+            _client.ConnectUserAsync(credentials).LogIfFailed();
 
             _logger.LogInformation("Start Service");
-
-            UpdateServiceAsync().LogIfFailed(_logger);
         }
 
         public async Task<IStreamChatClient> GetClientWhenReadyAsync()
@@ -55,27 +53,6 @@ namespace StreamChatMaui.Services
         private void OnConnected(IStreamLocalUserData localUserData)
         {
             _logger.LogInformation($"User connected: {localUserData.UserId}");
-        }
-
-        /// <summary>
-        /// Calling _client.Update(); is essential to maintain a live connection with the Stream Chat Server.
-        /// It's very lighweight and can be called often without any performance hit
-        /// </summary>
-        private async Task UpdateServiceAsync()
-        {
-            while (!_cts.IsCancellationRequested)
-            {
-                try
-                {
-                    _client.Update();
-                }
-                catch (Exception e)
-                {
-                    _logger.LogError(e.Message);
-                }
-
-                await Task.Delay(200);
-            }
         }
 
         /// <summary>
