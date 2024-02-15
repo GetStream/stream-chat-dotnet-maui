@@ -25,7 +25,7 @@ If you wish to futher explore the SDK features, please refer to our [Unity/C# Do
 ## Stream Chat Service
 The key component that initiates a connection with the Stream Chat Server is the [Stream Chat Service](https://github.com/sierpinskid/stream-chat-dotnet-maui/blob/main/StreamChatMaui/Services/StreamChatService.cs). There are three actions required throughout a single session of the app running:
 1. Initiate the connection with `streamClient.ConnectUserAsync(credentials);`
-2. Call `streamClient.Dispose()` when finished using to free up resources
+2. Call `streamClient.Dispose()` when finished using
 
 All of the above is handled by the [Stream Chat Service](https://github.com/sierpinskid/stream-chat-dotnet-maui/blob/main/StreamChatMaui/Services/StreamChatService.cs).
 
